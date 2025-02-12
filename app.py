@@ -1,41 +1,75 @@
 import streamlit as st
 import numpy as np
-import pandas as pd
+import tensorflow as tf
+import xarray as xr
 import plotly.express as px
 
-# Placeholder function for emulator models
-def run_emulator(emulator, co2_concentration):
-    if emulator == "Model A":
-        temp_change = 0.02 * (co2_concentration - 280)
-    elif emulator == "Model B":
-        temp_change = 0.025 * (co2_concentration - 280)
-    else:
-        temp_change = 0.03 * (co2_concentration - 280)
-    return temp_change
+# Constants for normalization
+max_co2 = 9500.
+max_ch4 = 0.8
+max_so2 = 90.
+max_bc = 9.
 
-# Placeholder function for sea level rise calculation
-def calculate_sea_level_rise(temp_change):
-    return 0.4 * temp_change  # Example equation
+# Function to normalize inputs
+def normalize_inputs(data):
+    return np.asarray(data) / np.asarray([max_co2, max_ch4, max_so2, max_so2])
 
-st.title("Florida Sea Level Rise Predictor")
+# Sea level rise calculation (example function)
+def calculate_sea_level_rise(temp):
+    return 3.0 * temp  # Placeholder linear relationship
 
-co2_concentration = st.slider("Select CO2 Concentration (ppm):", 280, 1000, 420)
+# Load emulator model
+@st.cache_resource
+def load_model(model_path):
+    return tf.saved_model.load(model_path)
 
-emulator = st.selectbox("Choose an Emulator:", ["Model A", "Model B", "Model C"])
+# Run emulator to predict temperature
+def predict_temperature(emulator, co2, ch4, so2, bc):
+    model = load_model(emulator)
+    inputs = tf.convert_to_tensor([[co2, ch4, so2, bc]], dtype=tf.float64)
+    posterior_mean, _ = model.predict_f_compiled(inputs)
+    return np.reshape(posterior_mean, [96, 144])
 
-temp_change = run_emulator(emulator, co2_concentration)
-sea_level_rise = calculate_sea_level_rise(temp_change)
+# Sidebar for emissions input
+def emissions_ui():
+    st.sidebar.markdown("# Emissions")
+    co2 = st.sidebar.slider("CO2 concentrations (GtCO2)", 0.0, max_co2, 1800., 10.)
+    return [co2, 0.3, 85., 7.]  # Default values for CH4, SO2, and BC are kept as placeholders
 
-st.write(f"Predicted Temperature Change: {temp_change:.2f}°C")
-st.write(f"Predicted Sea Level Rise: {sea_level_rise:.2f} meters")
+# Sidebar for emulator selection
+def emulator_ui():
+    st.sidebar.markdown("# Select Emulator")
+    available_emulators = ["emulator", "alternate_emulator_1", "alternate_emulator_2"]
+    selected_emulators = st.sidebar.multiselect("Choose one or more emulators", available_emulators, default=[available_emulators[0]])
+    return selected_emulators
 
-florida_map = px.scatter_mapbox(
-    pd.DataFrame({"lat": [27.994402], "lon": [-81.760254], "Sea Level Rise (m)": [sea_level_rise]}),
-    lat="lat",
-    lon="lon",
-    size="Sea Level Rise (m)",
-    color="Sea Level Rise (m)",
-    zoom=6,
-    mapbox_style="carto-positron"
-)
-st.plotly_chart(florida_map)
+# Main app function
+def main():
+    st.title("Florida Sea Level Rise Projection")
+    co2, ch4, so2, bc = emissions_ui()
+    selected_emulators = emulator_ui()
+    
+    st.subheader("Projected Sea Level Rise for Florida")
+    
+    fig = px.scatter_mapbox(mapbox_style="carto-positron", zoom=5, title="Florida Sea Level Rise Projections")
+    
+    # Generate lat/lon grid for Florida (approximate bounds)
+    lat_range = np.linspace(24, 31, 50)
+    lon_range = np.linspace(-88, -79, 50)
+    lat, lon = np.meshgrid(lat_range, lon_range)
+    
+    for emulator in selected_emulators:
+        temperature = predict_temperature(emulator, co2, ch4, so2, bc)
+        sea_level_rise = calculate_sea_level_rise(temperature)
+        
+        # Flatten for visualization
+        df = xr.DataArray(sea_level_rise, coords={'latitude': lat.flatten(), 'longitude': lon.flatten()})
+        df = df.to_dataframe().reset_index()
+        df.rename(columns={0: f"Sea Level Rise ({emulator}) (m)"}, inplace=True)
+        
+        fig.add_trace(px.scatter_mapbox(df, lat="latitude", lon="longitude", color=df.columns[-1]).data[0])
+    
+    st.plotly_chart(fig)
+
+if __name__ == "__main__":
+    main()
