@@ -1,0 +1,9 @@
+scipy
+geoviews
+xarray
+tensorflow
+streamlit
+numpy
+pandas
+matplotlib
+plotly
