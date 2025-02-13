@@ -59,7 +59,7 @@ def emulator_ui():
 # Main app function
 def main():
     st.title("Florida Sea Level Rise Projection")
-    # co2, ch4, so2, bc = emissions_ui()
+    co2, ch4, so2, bc = emissions_ui()
     selected_emulators = emulator_ui()
     
     st.subheader("Projected Sea Level Rise for Florida")
@@ -72,14 +72,8 @@ def main():
         mapbox_style="carto-positron",  # Clean Mapbox style
     )
     
-    # Enable mouse scroll zooming
-    fig.update_layout(
-        dragmode="zoom",  # Allows zooming via dragging
-        uirevision="static"  # Prevents reset of zoom on updates
-    )
-    
     # Display the map in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
 # # Emulators to download
 # EMULATORS = {
