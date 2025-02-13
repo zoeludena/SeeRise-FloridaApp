@@ -72,6 +72,11 @@ def main():
         mapbox_style="carto-positron",  # Clean Mapbox style
     )
 
+    fig.update_layout(
+        dragmode="zoom",  # Allows zooming via dragging
+        uirevision="static"  # Prevents reset of zoom on updates
+    )
+
     # Display the map in Streamlit
     st.plotly_chart(fig)
 
