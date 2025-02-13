@@ -54,18 +54,42 @@ def emissions_ui():
     co2 = st.sidebar.slider("CO2 concentrations (GtCO2)", 0.0, max_co2, 1800., 10.)
     return [co2, 0.3, 85., 7.]  # Default values for CH4, SO2, and BC are kept as placeholders
 
-# Sidebar for emulator selection
 def emulator_ui():
     st.sidebar.markdown("# Select Emulator")
-    available_emulators = ["Pattern Scaling", "CNN-LTSM", "Random Forest", "Gaussian Process"]
-    selected_emulators = st.sidebar.multiselect("Choose one or more emulators", available_emulators, default=[available_emulators[0]])
-    return selected_emulators
+
+    # Define fixed colors for each emulator
+    emulator_colors = {
+        "Pattern Scaling": "#0072b2",
+        "CNN-LTSM": "#d55e00", 
+        "Random Forest": "#cc79a7", 
+        "Gaussian Process": "#009e73", 
+    }
+
+    # Sidebar multiselect for emulator selection
+    selected_emulators = st.sidebar.multiselect(
+        "Choose one or more emulators:",
+        list(emulator_colors.keys()),
+        default=list(emulator_colors.keys())  # Default: Select all
+    )
+    st.sidebar.markdown("### Emulator Color")
+
+    # Show color-coded selections below
+    for emulator in selected_emulators:
+        color = emulator_colors[emulator]
+        st.sidebar.markdown(
+            f'<div style="background-color:{color}; padding:5px; border-radius:5px; color:white; text-align:center; margin-bottom:5px;">{emulator}</div>',
+            unsafe_allow_html=True
+        )
+
+    return selected_emulators, {emulator: emulator_colors[emulator] for emulator in selected_emulators}
+
+
 
 # Main app function
 def main():
     st.title("Florida Sea Level Rise Projection")
     co2, ch4, so2, bc = emissions_ui()
-    selected_emulators = emulator_ui()
+    selected_emulators, emulator_colors = emulator_ui()
     
     st.subheader("Projected Sea Level Rise for Florida")
     
