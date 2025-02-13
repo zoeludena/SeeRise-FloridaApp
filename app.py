@@ -64,24 +64,12 @@ def main():
     
     st.subheader("Projected Sea Level Rise for Florida")
     
-    # Define some major Florida locations
-    data = {
-        "name": ["Miami", "Orlando", "Tampa", "Tallahassee", "Jacksonville"],
-        "latitude": [25.7617, 28.5383, 27.9506, 30.4383, 30.3322],
-        "longitude": [-80.1918, -81.3792, -82.4572, -84.2807, -81.6557],
-    }
-
-    df = pd.DataFrame(data)
-
-    # Create an interactive Mapbox map
+    # Create a blank Mapbox map centered on Florida
     fig = px.scatter_mapbox(
-        df,
-        lat="latitude",
-        lon="longitude",
-        text="name",
-        zoom=5,  # Adjust zoom level
-        mapbox_style="carto-positron",  # Map style
-        title="Major Cities in Florida"
+        lat=[27.9944024],  # Central latitude of Florida
+        lon=[-81.7602544],  # Central longitude of Florida
+        zoom=5,  # Zoom level to fit Florida
+        mapbox_style="carto-positron",  # Clean Mapbox style
     )
 
     # Display the map in Streamlit
