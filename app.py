@@ -3,33 +3,45 @@ import numpy as np
 import tensorflow as tf
 import xarray as xr
 import plotly.express as px
-from sklearn.linear_model import LinearRegression 
+from sklearn.linear_model import LinearRegression
 
-# Constants for normalization
-max_co2 = 9500.
-max_ch4 = 0.8
-max_so2 = 90.
-max_bc = 9.
+# File to download
+DATA = {
+    "climate_historical_data.tar.gz": {
+        "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/climate_historical_data.tar.gz",
+        "description": "Historical Climate Data (1901-2014)",
+        "extract": True,
+    },
+}
 
-# Function to normalize inputs
-def normalize_inputs(data):
-    return np.asarray(data) / np.asarray([max_co2, max_ch4, max_so2, max_so2])
+def download_and_extract():
+    for filename, info in DATA.items():
+        if not os.path.exists(filename):
+            st.sidebar.warning(f"Downloading {info['description']}...")
+            urllib.request.urlretrieve(info["url"], filename)
+            st.sidebar.success(f"Downloaded {info['description']}!")
 
-# Sea level rise calculation (example function)
-def calculate_sea_level_rise(temp):
-    return 3.0 * temp  # Placeholder linear relationship
+        # Extract if needed
+        if info.get("extract", False):
+            with tarfile.open(filename, "r:gz") as tar:
+                tar.extractall()
+                st.sidebar.success(f"Extracted {info['description']}!")
 
-# Load emulator model
+def load_historical_data():
+    download_and_extract()  # Ensure files are downloaded before loading
+
+    # Load historical climate data
+    X_hist = np.load("X_hist.npy")  # Shape: (Time Steps, 1)
+    y = np.load("y.npy")  # Shape: (Time Steps, 1)
+    
+    return X_hist, y
+
 @st.cache_resource
-def load_model(model_path):
-    return tf.saved_model.load(model_path)
-
-# Run emulator to predict temperature
-def predict_temperature(emulator, co2, ch4, so2, bc):
-    model = load_model(emulator)
-    inputs = tf.convert_to_tensor([[co2, ch4, so2, bc]], dtype=tf.float64)
-    posterior_mean, _ = model.predict_f_compiled(inputs)
-    return np.reshape(posterior_mean, [96, 144])
+def train_linear_regression():
+    X_hist, y = load_historical_data()  # Load historical data
+    hist_model = LinearRegression()
+    hist_model.fit(X_hist, y)  # Train model
+    return hist_model
 
 # Sidebar for emissions input
 def emissions_ui():
@@ -72,31 +84,24 @@ def main():
     
     st.plotly_chart(fig)
 
-
-# Files to download
-EXTERNAL_DEPENDENCIES = {
-    "ClimateBench_cnn_outputs_ssp245_predict_tas.nc": {
-        "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/ClimateBench_cnn_outputs_ssp245_predict_tas.nc",
-        "description": "CNN-LTSM Emulator",
-        "extract": False,  # NetCDF files should NOT be extracted
-    },
-    "ClimateBench_gp_outputs_ssp245_predict_tas.tar.gz": {
-        "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/ClimateBench_gp_outputs_ssp245_predict_tas.tar.gz",
-        "description": "Gaussian Process Emulator",
-        "extract": True,
-    },
-    "tuned_rf_outputs_ssp245_predict_tas.tar.gz": {
-        "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/tuned_rf_outputs_ssp245_predict_tas.tar.gz",
-        "description": "Random Forest Emulator",
-        "extract": True,
-    },
-    "climate_historical_data.tar.gz": {
-        "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/climate_historical_data.tar.gz",
-        "description": "Historical Climate Data (1901-2014)",
-        "extract": True,
-    },
-}
-
+# # Emulators to download
+# EMULATORS = {
+#     "ClimateBench_cnn_outputs_ssp245_predict_tas.nc": {
+#         "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/ClimateBench_cnn_outputs_ssp245_predict_tas.nc",
+#         "description": "CNN-LTSM Emulator",
+#         "extract": False,  # NetCDF files should NOT be extracted
+#     },
+#     "ClimateBench_gp_outputs_ssp245_predict_tas.tar.gz": {
+#         "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/ClimateBench_gp_outputs_ssp245_predict_tas.tar.gz",
+#         "description": "Gaussian Process Emulator",
+#         "extract": True,
+#     },
+#     "tuned_rf_outputs_ssp245_predict_tas.tar.gz": {
+#         "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/tuned_rf_outputs_ssp245_predict_tas.tar.gz",
+#         "description": "Random Forest Emulator",
+#         "extract": True,
+#     },
+# }
 
 if __name__ == "__main__":
     main()
