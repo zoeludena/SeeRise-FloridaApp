@@ -101,13 +101,10 @@ def main():
     co2 = emissions_ui()
     selected_emulators, emulator_colors = emulator_ui()
 
-    st.subheader("Projected Sea Level Rise for Florida")
+    st.subheader("Projected Sea Level Rise for Florida in 2100")
 
     # Train the Linear Regression model (Pattern Scaling)
     hist_model = train_linear_regression()
-
-    # Predict sea level rise using the trained model
-    pattern_scaling_prediction = hist_model.predict(np.array(co2).reshape(-1, 1))[0][0]
 
     # Create a Mapbox map centered on Florida
     fig = px.scatter_mapbox(
@@ -138,7 +135,7 @@ def main():
     df_coastal.columns = ["City", "Latitude", "Longitude"]
 
     # Predict sea level rise for each coastal city
-    df_coastal["Sea Level Rise (m)"] = hist_model.predict(df_coastal["Latitude"].values.reshape(-1, 1))
+    df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
     # If "Pattern Scaling" is selected, add it to the map
     if "Pattern Scaling" in selected_emulators:
