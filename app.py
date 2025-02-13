@@ -5,6 +5,11 @@ import xarray as xr
 import plotly.express as px
 from sklearn.linear_model import LinearRegression
 
+max_co2 = 9500.
+max_ch4 = 0.8
+max_so2 = 90.
+max_bc = 9.
+
 # File to download
 DATA = {
     "climate_historical_data.tar.gz": {
