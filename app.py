@@ -64,24 +64,27 @@ def main():
     
     st.subheader("Projected Sea Level Rise for Florida")
     
-    fig = px.scatter_mapbox(mapbox_style="carto-positron", zoom=5, title="Florida Sea Level Rise Projections")
-    
-    # Generate lat/lon grid for Florida (approximate bounds)
-    lat_range = np.linspace(24, 31, 50)
-    lon_range = np.linspace(-88, -79, 50)
-    lat, lon = np.meshgrid(lat_range, lon_range)
-    
-    for emulator in selected_emulators:
-        temperature = predict_temperature(emulator, co2, ch4, so2, bc)
-        sea_level_rise = calculate_sea_level_rise(temperature)
-        
-        # Flatten for visualization
-        df = xr.DataArray(sea_level_rise, coords={'latitude': lat.flatten(), 'longitude': lon.flatten()})
-        df = df.to_dataframe().reset_index()
-        df.rename(columns={0: f"Sea Level Rise ({emulator}) (m)"}, inplace=True)
-        
-        fig.add_trace(px.scatter_mapbox(df, lat="latitude", lon="longitude", color=df.columns[-1]).data[0])
-    
+    # Define some major Florida locations
+    data = {
+        "name": ["Miami", "Orlando", "Tampa", "Tallahassee", "Jacksonville"],
+        "latitude": [25.7617, 28.5383, 27.9506, 30.4383, 30.3322],
+        "longitude": [-80.1918, -81.3792, -82.4572, -84.2807, -81.6557],
+    }
+
+    df = pd.DataFrame(data)
+
+    # Create an interactive Mapbox map
+    fig = px.scatter_mapbox(
+        df,
+        lat="latitude",
+        lon="longitude",
+        text="name",
+        zoom=5,  # Adjust zoom level
+        mapbox_style="carto-positron",  # Map style
+        title="Major Cities in Florida"
+    )
+
+    # Display the map in Streamlit
     st.plotly_chart(fig)
 
 # # Emulators to download
