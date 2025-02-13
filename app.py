@@ -4,6 +4,11 @@ import tensorflow as tf
 import xarray as xr
 import plotly.express as px
 from sklearn.linear_model import LinearRegression
+import os
+import urllib
+import tarfile
+import time
+import pandas as pd
 
 max_co2 = 9500.
 max_ch4 = 0.8
@@ -19,18 +24,21 @@ DATA = {
     },
 }
 
+import streamlit as st
+import time
+import urllib.request
+import tarfile
+import os
+
 def download_and_extract():
     for filename, info in DATA.items():
         if not os.path.exists(filename):
-            st.sidebar.warning(f"Downloading {info['description']}...")
             urllib.request.urlretrieve(info["url"], filename)
-            st.sidebar.success(f"Downloaded {info['description']}!")
 
         # Extract if needed
         if info.get("extract", False):
             with tarfile.open(filename, "r:gz") as tar:
                 tar.extractall()
-                st.sidebar.success(f"Extracted {info['description']}!")
 
 def load_historical_data():
     download_and_extract()  # Ensure files are downloaded before loading
@@ -52,7 +60,7 @@ def train_linear_regression():
 def emissions_ui():
     st.sidebar.markdown("# Emissions")
     co2 = st.sidebar.slider("CO2 concentrations (GtCO2)", 0.0, max_co2, 1800., 10.)
-    return [co2, 0.3, 85., 7.]  # Default values for CH4, SO2, and BC are kept as placeholders
+    return co2
 
 def emulator_ui():
     st.sidebar.markdown("# Select Emulator")
@@ -69,7 +77,7 @@ def emulator_ui():
     selected_emulators = st.sidebar.multiselect(
         "Choose one or more emulators:",
         list(emulator_colors.keys()),
-        default=list(emulator_colors.keys())  # Default: Select all
+        default=list(emulator_colors.keys())[0]
     )
     st.sidebar.markdown("### Emulator Color")
 
@@ -88,21 +96,65 @@ def emulator_ui():
 # Main app function
 def main():
     st.title("Florida Sea Level Rise Projection")
-    co2, ch4, so2, bc = emissions_ui()
+
+    # Get emissions inputs & selected emulators
+    co2 = emissions_ui()
     selected_emulators, emulator_colors = emulator_ui()
-    
+
     st.subheader("Projected Sea Level Rise for Florida")
-    
-    # Create a blank Mapbox map centered on Florida
+
+    # Train the Linear Regression model (Pattern Scaling)
+    hist_model = train_linear_regression()
+
+    # Predict sea level rise using the trained model
+    pattern_scaling_prediction = hist_model.predict(np.array(co2).reshape(-1, 1))[0][0]
+
+    # Create a Mapbox map centered on Florida
     fig = px.scatter_mapbox(
         lat=[27.9944024],  # Central latitude of Florida
         lon=[-81.7602544],  # Central longitude of Florida
         zoom=5,  # Zoom level to fit Florida
         mapbox_style="carto-positron",  # Clean Mapbox style
     )
-    
+
+    # Define Florida coastal locations (approximate lat/lon)
+    coastal_locations = {
+        "Miami": (25.7617, -80.1918),
+        "Fort Lauderdale": (26.1224, -80.1373),
+        "West Palm Beach": (26.7153, -80.0534),
+        "Naples": (26.1420, -81.7948),
+        "Tampa": (27.9506, -82.4572),
+        "Sarasota": (27.3364, -82.5307),
+        "Fort Myers": (26.6406, -81.8723),
+        "St. Petersburg": (27.7676, -82.6403),
+        "Daytona Beach": (29.2108, -81.0228),
+        "Jacksonville": (30.3322, -81.6557),
+        "Pensacola": (30.4213, -87.2169),
+        "Key West": (24.5551, -81.7800)
+    }
+
+    # Convert to DataFrame
+    df_coastal = pd.DataFrame(coastal_locations).T.reset_index()
+    df_coastal.columns = ["City", "Latitude", "Longitude"]
+
+    # Predict sea level rise for each coastal city
+    df_coastal["Sea Level Rise (m)"] = hist_model.predict(df_coastal["Latitude"].values.reshape(-1, 1))
+
+    # If "Pattern Scaling" is selected, add it to the map
+    if "Pattern Scaling" in selected_emulators:
+        # Add coastal cities with predicted sea level rise to the map
+        fig.add_trace(px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
+            hover_name="City",
+            hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
+        ).data[0])
+
     # Display the map in Streamlit
     st.plotly_chart(fig)
+
 
 # # Emulators to download
 # EMULATORS = {
