@@ -71,9 +71,15 @@ def main():
         zoom=5,  # Zoom level to fit Florida
         mapbox_style="carto-positron",  # Clean Mapbox style
     )
-
+    
+    # Enable mouse scroll zooming
+    fig.update_layout(
+        dragmode="zoom",  # Allows zooming via dragging
+        uirevision="static"  # Prevents reset of zoom on updates
+    )
+    
     # Display the map in Streamlit
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 # # Emulators to download
 # EMULATORS = {
