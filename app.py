@@ -59,7 +59,7 @@ def emulator_ui():
 # Main app function
 def main():
     st.title("Florida Sea Level Rise Projection")
-    co2, ch4, so2, bc = emissions_ui()
+    # co2, ch4, so2, bc = emissions_ui()
     selected_emulators = emulator_ui()
     
     st.subheader("Projected Sea Level Rise for Florida")
