@@ -145,7 +145,6 @@ def main():
             lat="Latitude",
             lon="Longitude",
             color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
-            hover_name="City",
             hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
         ).data[0])
 
