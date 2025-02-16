@@ -59,7 +59,7 @@ def train_linear_regression():
 # Sidebar for emissions input
 def emissions_ui():
     st.sidebar.markdown("# Emissions")
-    co2 = st.sidebar.slider("CO2 concentrations (GtCO2)", 0.0, max_co2, 1800., 10.)
+    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2) in 2100", 0.0, max_co2, 1800., 10.)
     return co2
 
 def emulator_ui():
