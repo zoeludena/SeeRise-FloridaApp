@@ -134,6 +134,7 @@ def main():
     df_coastal = pd.DataFrame(coastal_locations).T.reset_index()
     df_coastal.columns = ["City", "Latitude", "Longitude"]
 
+    # TODO: Change to TAS then to CO2 -> For now just a placeholder
     # Predict sea level rise for each coastal city
     df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
