@@ -93,12 +93,11 @@ def train_linear_regression():
     hist_model.fit(X_hist, y)  # Train model
     return hist_model
 
-def gp_emulator():
-    download_nc_files()
+def gp_emulator(co2):
+    download_nc_files()  # Ensure .nc files are downloaded
 
-    data_path = "data/"  # Path where files are saved
+    data_path = "data/"  
 
-    # Ensure all required files exist before proceeding
     required_files = [
         'inputs_historical.nc', 'inputs_ssp585.nc',
         'inputs_ssp126.nc', 'inputs_ssp370.nc',
@@ -107,12 +106,10 @@ def gp_emulator():
     ]
 
     missing_files = [f for f in required_files if not os.path.exists(os.path.join(data_path, f))]
-
     if missing_files:
         raise FileNotFoundError(f"Missing files: {missing_files}. Ensure all .nc files are downloaded.")
 
-    data_path = "data/"
-
+    # Load training data
     X = xr.open_mfdataset([
         os.path.join(data_path, 'inputs_historical.nc'),
         os.path.join(data_path, 'inputs_ssp585.nc'),
@@ -125,49 +122,41 @@ def gp_emulator():
         xr.open_dataset(os.path.join(data_path, 'outputs_ssp585.nc'), engine="netcdf4").sel(member=1)
     ], dim='time').compute()
 
+    # Ensure input & output data have the same number of samples
+    min_samples = min(len(X["CO2"].data), len(Y["tas"].data))
+    X = X.isel(time=slice(0, min_samples))  # Trim inputs
+    Y = Y.isel(time=slice(0, min_samples))  # Trim outputs
 
     # EOF Analysis
     bc_solver = Eof(X['BC'])
     bc_pcs = bc_solver.pcs(npcs=5, pcscaling=1)
     so2_solver = Eof(X['SO2'])
     so2_pcs = so2_solver.pcs(npcs=5, pcscaling=1)
-    
-    # Convert PC to DataFrame
+
     bc_df = bc_pcs.to_dataframe().unstack('mode')
     bc_df.columns = [f"BC_{i}" for i in range(5)]
     so2_df = so2_pcs.to_dataframe().unstack('mode')
     so2_df.columns = [f"SO2_{i}" for i in range(5)]
-    
-    # Prepare input data
+
+    # **Modify input data to use selected CO₂ value**
     leading_historical_inputs = pd.DataFrame({
-        "CO2": normalize_co2(X["CO2"].data),
-        "CH4": normalize_ch4(X["CH4"].data)
-    }, index=X["CO2"].coords['time'].data)
-    
+        "CO2": normalize_co2(np.full((min_samples,), co2)),  # Ensure correct shape
+        "CH4": normalize_ch4(X["CH4"].data[:min_samples])  # Keep CH₄ constant
+    }, index=X["CO2"].coords['time'].data[:min_samples])
+
     leading_historical_inputs = pd.concat([leading_historical_inputs, bc_df, so2_df], axis=1)
-    
+
     # Train GP Model
     tas_gp = gp_model(leading_historical_inputs, Y["tas"])
     tas_gp.train()
-    
-    # Load test data
-    test_Y = xr.open_dataset(data_path + 'outputs_ssp245.nc').compute()
-    test_X = xr.open_dataset(data_path + 'inputs_ssp245.nc').compute()
-    
-    test_inputs = pd.DataFrame({
-        "CO2": normalize_co2(test_X["CO2"].data),
-        "CH4": normalize_ch4(test_X["CH4"].data)
-    }, index=test_X["CO2"].coords['time'].data)
-    
-    test_inputs = pd.concat([
-        test_inputs, 
-        bc_solver.projectField(test_X["BC"], neofs=5, eofscaling=1).to_dataframe().unstack('mode').rename(columns={i:f"BC_{i}" for i in range(5)}),
-        so2_solver.projectField(test_X["SO2"], neofs=5, eofscaling=1).to_dataframe().unstack('mode').rename(columns={i:f"SO2_{i}" for i in range(5)})
-    ], axis=1)
-    
-    m_tas, _ = tas_gp.predict(test_inputs)
+
+    # Predict global mean temperature based on the selected CO₂ level
+    m_tas, _ = tas_gp.predict(leading_historical_inputs)
     tas_global_mean = m_tas.mean(dim=("lat", "lon"))
-    return tas_global_mean
+
+    return tas_global_mean.values
+
+
 
 # Sidebar for emissions input
 def emissions_ui():
@@ -252,9 +241,12 @@ def main():
     df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
     # WORK IN PROGRESS
-    tas_global_mean = gp_emulator()
+    tas_global_mean = gp_emulator(co2).reshape(-1, 1)
+
     # GP Model
-    df_coastal["GP Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
+    # The output units of hist_model (Linear Regression model) depend on how it was trained. If hist_model was trained to predict sea level rise in meters (m) or millimeters (mm) using temperature as input, then its output will be in that unit.
+    df_coastal["GP Sea Level Rise (mm)"] = np.round(hist_model.predict(tas_global_mean)[-1][0], 2) # Giving it Kelvin Temperature
+        #Is it in mm??? I am so confused.
 
     # If "Pattern Scaling" is selected, add it to the map
     if "Pattern Scaling" in selected_emulators:
@@ -273,7 +265,7 @@ def main():
             lat="Latitude",
             lon="Longitude",
             color_discrete_sequence=[emulator_colors["Gaussian Process"]],  # Use predefined color
-            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (m)": True}
+            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (mm)": True}
         ).data[0])
 
     # Display the map in Streamlit
