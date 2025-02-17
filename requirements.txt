@@ -7,3 +7,10 @@ numpy
 pandas
 matplotlib
 plotly
+scikit-learn
+gdown
+eofs
+netcdf4
+h5netcdf
+esem
+gpflow
