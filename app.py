@@ -9,11 +9,18 @@ import urllib
 import tarfile
 import time
 import pandas as pd
+from eofs.xarray import Eof
+import esem
+from esem import gp_model
+from esem.data_processors import Whiten, Normalise
 
 max_co2 = 9500.
 max_ch4 = 0.8
 max_so2 = 90.
 max_bc = 9.
+
+normalize_co2 = lambda data: data / max_co2
+normalize_ch4 = lambda data: data / max_ch4
 
 # File to download
 DATA = {
@@ -48,6 +55,62 @@ def load_historical_data():
     y = np.load("y.npy")  # Shape: (Time Steps, 1)
     
     return X_hist, y
+
+def gp_emulator():
+
+    data_path = "data/"
+
+    # Load training data
+    X = xr.open_mfdataset([data_path + 'inputs_historical.nc', data_path + 'inputs_ssp585.nc',
+                          data_path + 'inputs_ssp126.nc', data_path + 'inputs_ssp370.nc']).compute()
+    
+    Y = xr.concat([
+        xr.open_dataset(data_path + 'outputs_historical.nc').sel(member=2),
+        xr.open_dataset(data_path + 'outputs_ssp585.nc').sel(member=1)
+    ], dim='time').compute()
+
+    # EOF Analysis
+    bc_solver = Eof(X['BC'])
+    bc_pcs = bc_solver.pcs(npcs=5, pcscaling=1)
+    so2_solver = Eof(X['SO2'])
+    so2_pcs = so2_solver.pcs(npcs=5, pcscaling=1)
+    
+    # Convert PC to DataFrame
+    bc_df = bc_pcs.to_dataframe().unstack('mode')
+    bc_df.columns = [f"BC_{i}" for i in range(5)]
+    so2_df = so2_pcs.to_dataframe().unstack('mode')
+    so2_df.columns = [f"SO2_{i}" for i in range(5)]
+    
+    # Prepare input data
+    leading_historical_inputs = pd.DataFrame({
+        "CO2": normalize_co2(X["CO2"].data),
+        "CH4": normalize_ch4(X["CH4"].data)
+    }, index=X["CO2"].coords['time'].data)
+    
+    leading_historical_inputs = pd.concat([leading_historical_inputs, bc_df, so2_df], axis=1)
+    
+    # Train GP Model
+    tas_gp = gp_model(leading_historical_inputs, Y["tas"])
+    tas_gp.train()
+    
+    # Load test data
+    test_Y = xr.open_dataset(data_path + 'outputs_ssp245.nc').compute()
+    test_X = xr.open_dataset(data_path + 'inputs_ssp245.nc').compute()
+    
+    test_inputs = pd.DataFrame({
+        "CO2": normalize_co2(test_X["CO2"].data),
+        "CH4": normalize_ch4(test_X["CH4"].data)
+    }, index=test_X["CO2"].coords['time'].data)
+    
+    test_inputs = pd.concat([
+        test_inputs, 
+        bc_solver.projectField(test_X["BC"], neofs=5, eofscaling=1).to_dataframe().unstack('mode').rename(columns={i:f"BC_{i}" for i in range(5)}),
+        so2_solver.projectField(test_X["SO2"], neofs=5, eofscaling=1).to_dataframe().unstack('mode').rename(columns={i:f"SO2_{i}" for i in range(5)})
+    ], axis=1)
+    
+    m_tas, _ = tas_gp.predict(test_inputs)
+    tas_global_mean = m_tas.mean(dim=("lat", "lon"))
+    return tas_global_mean
 
 @st.cache_resource
 def train_linear_regression():
@@ -136,7 +199,12 @@ def main():
 
     # TODO: Change to TAS then to CO2 -> For now just a placeholder
     # Predict sea level rise for each coastal city
-    df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
+    df_coastal["PS Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
+
+    # WORK IN PROGRESS
+    tas_global_mean = gp_emulator()
+    # GP Model
+    df_coastal["GP Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
     # If "Pattern Scaling" is selected, add it to the map
     if "Pattern Scaling" in selected_emulators:
@@ -146,7 +214,16 @@ def main():
             lat="Latitude",
             lon="Longitude",
             color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
-            hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
+            hover_data={"Latitude": False, "Longitude": False, "PS Sea Level Rise (m)": True}
+        ).data[0])
+
+    if "Gaussian Process" in selected_emulators:
+        fig.add_trace(px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["Gaussian Process"]],  # Use predefined color
+            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (m)": True}
         ).data[0])
 
     # Display the map in Streamlit
