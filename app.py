@@ -7,13 +7,50 @@ from sklearn.linear_model import LinearRegression
 import os
 import urllib
 import tarfile
-import time
 import pandas as pd
+import xarray as xr
+from eofs.xarray import Eof
+import gdown
+from esem import gp_model
 
 max_co2 = 9500.
 max_ch4 = 0.8
 max_so2 = 90.
 max_bc = 9.
+
+normalize_co2 = lambda data: data / max_co2
+normalize_ch4 = lambda data: data / max_ch4
+
+
+# Define Google Drive file IDs
+file_ids = {
+    "inputs_historical.nc": "1z0OxBEBFNOknn1W6mGwNqQ9NocFCb9Q1",
+    "inputs_ssp126.nc": "1KNA6VcuNaACNTFzJRyt3RwH2sDoZnTZG",
+    "inputs_ssp245.nc": "1mgyUzx6m4Jl5Nmvzw7ejmsshhTg4x82T",
+    "inputs_ssp370.nc": "1DgyGrMVLxKo7aVAJgHC1kk_wgFCoN4H7",
+    "inputs_ssp585.nc": "1XgZ12hLxd-dP7_09jjaHqX4TxUA66hox",
+    "outputs_historical.nc": "1QmDcFjWX4dohh4ZqW5Ga4GS5k9_iC8Zl",
+    "outputs_ssp126.nc": "1QwRxX0ZcG4nEtMlwm-_km4mVgG2RCKqL",
+    "outputs_ssp245.nc": "1-eCNMpVtDlHHX7AN3vhzTONOM7HuuFZ9",
+    "outputs_ssp370.nc": "1sL4anpD9JnnqVV52vDSqE5gnOIY-HpXt",
+    "outputs_ssp585.nc": "1SHZLAZdd3Mbyr0ZXBG5ODBzXXmJ9KLh1",
+}
+
+# Directory to save downloaded files
+data_dir = "data"
+os.makedirs(data_dir, exist_ok=True)
+
+def download_nc_files():
+    for filename, file_id in file_ids.items():
+        file_path = os.path.join(data_dir, filename)
+
+        if not os.path.exists(file_path):  # Check if file already exists
+            url = f"https://drive.google.com/uc?id={file_id}"
+            print(f"Downloading {filename}...")
+            gdown.download(url, file_path, quiet=False)
+        else:
+            print(f"{filename} already exists, skipping...")
+
 
 # File to download
 DATA = {
@@ -55,6 +92,82 @@ def train_linear_regression():
     hist_model = LinearRegression()
     hist_model.fit(X_hist, y)  # Train model
     return hist_model
+
+def gp_emulator():
+    download_nc_files()
+
+    data_path = "data/"  # Path where files are saved
+
+    # Ensure all required files exist before proceeding
+    required_files = [
+        'inputs_historical.nc', 'inputs_ssp585.nc',
+        'inputs_ssp126.nc', 'inputs_ssp370.nc',
+        'outputs_historical.nc', 'outputs_ssp585.nc',
+        'outputs_ssp245.nc', 'inputs_ssp245.nc'
+    ]
+
+    missing_files = [f for f in required_files if not os.path.exists(os.path.join(data_path, f))]
+
+    if missing_files:
+        raise FileNotFoundError(f"Missing files: {missing_files}. Ensure all .nc files are downloaded.")
+
+    data_path = "data/"
+
+    X = xr.open_mfdataset([
+        os.path.join(data_path, 'inputs_historical.nc'),
+        os.path.join(data_path, 'inputs_ssp585.nc'),
+        os.path.join(data_path, 'inputs_ssp126.nc'),
+        os.path.join(data_path, 'inputs_ssp370.nc')
+    ], engine="netcdf4").compute()
+
+    Y = xr.concat([
+        xr.open_dataset(os.path.join(data_path, 'outputs_historical.nc'), engine="netcdf4").sel(member=2),
+        xr.open_dataset(os.path.join(data_path, 'outputs_ssp585.nc'), engine="netcdf4").sel(member=1)
+    ], dim='time').compute()
+
+
+    # EOF Analysis
+    bc_solver = Eof(X['BC'])
+    bc_pcs = bc_solver.pcs(npcs=5, pcscaling=1)
+    so2_solver = Eof(X['SO2'])
+    so2_pcs = so2_solver.pcs(npcs=5, pcscaling=1)
+    
+    # Convert PC to DataFrame
+    bc_df = bc_pcs.to_dataframe().unstack('mode')
+    bc_df.columns = [f"BC_{i}" for i in range(5)]
+    so2_df = so2_pcs.to_dataframe().unstack('mode')
+    so2_df.columns = [f"SO2_{i}" for i in range(5)]
+    
+    # Prepare input data
+    leading_historical_inputs = pd.DataFrame({
+        "CO2": normalize_co2(X["CO2"].data),
+        "CH4": normalize_ch4(X["CH4"].data)
+    }, index=X["CO2"].coords['time'].data)
+    
+    leading_historical_inputs = pd.concat([leading_historical_inputs, bc_df, so2_df], axis=1)
+    
+    # Train GP Model
+    tas_gp = gp_model(leading_historical_inputs, Y["tas"])
+    tas_gp.train()
+    
+    # Load test data
+    test_Y = xr.open_dataset(data_path + 'outputs_ssp245.nc').compute()
+    test_X = xr.open_dataset(data_path + 'inputs_ssp245.nc').compute()
+    
+    test_inputs = pd.DataFrame({
+        "CO2": normalize_co2(test_X["CO2"].data),
+        "CH4": normalize_ch4(test_X["CH4"].data)
+    }, index=test_X["CO2"].coords['time'].data)
+    
+    test_inputs = pd.concat([
+        test_inputs, 
+        bc_solver.projectField(test_X["BC"], neofs=5, eofscaling=1).to_dataframe().unstack('mode').rename(columns={i:f"BC_{i}" for i in range(5)}),
+        so2_solver.projectField(test_X["SO2"], neofs=5, eofscaling=1).to_dataframe().unstack('mode').rename(columns={i:f"SO2_{i}" for i in range(5)})
+    ], axis=1)
+    
+    m_tas, _ = tas_gp.predict(test_inputs)
+    tas_global_mean = m_tas.mean(dim=("lat", "lon"))
+    return tas_global_mean
 
 # Sidebar for emissions input
 def emissions_ui():
@@ -138,6 +251,11 @@ def main():
     # Predict sea level rise for each coastal city
     df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
+    # WORK IN PROGRESS
+    tas_global_mean = gp_emulator()
+    # GP Model
+    df_coastal["GP Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
+
     # If "Pattern Scaling" is selected, add it to the map
     if "Pattern Scaling" in selected_emulators:
         # Add coastal cities with predicted sea level rise to the map
@@ -147,6 +265,15 @@ def main():
             lon="Longitude",
             color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
             hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
+        ).data[0])
+
+    if "Gaussian Process" in selected_emulators:
+        fig.add_trace(px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["Gaussian Process"]],  # Use predefined color
+            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (m)": True}
         ).data[0])
 
     # Display the map in Streamlit
