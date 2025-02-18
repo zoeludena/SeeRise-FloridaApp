@@ -12,6 +12,7 @@ import xarray as xr
 from eofs.xarray import Eof
 import gdown
 from esem import gp_model
+import geopandas as gpd
 
 max_co2 = 9500.
 max_ch4 = 0.8
@@ -199,6 +200,26 @@ def emulator_ui():
 def main():
     st.title("Florida Sea Level Rise Projection")
 
+    # Google Drive File IDs for each shapefile component
+    file_ids = {
+        "ne_10m_coastline.shp": "13FSAfF40llhCUxxG9umplGU_WPJmxEn-",
+        "ne_10m_coastline.dbf": "1Fx3ME7uAHux4hs8G4caw0M8M4iC-11yj",
+        "ne_10m_coastline.prj": "1LudzsqtdTdzp29LYFwBxUI6gvpFwPBJS",
+        "ne_10m_coastline.shx": "1GHbnb7RqGBcXNvd90APDGa-43wMAbwZX"
+    }
+
+    # Directory to save the shapefile components
+    shp_folder = "data/"
+    os.makedirs(shp_folder, exist_ok=True)
+
+    # Download each required shapefile component
+    for filename, file_id in file_ids.items():
+        file_path = os.path.join(shp_folder, filename)
+        if not os.path.exists(file_path):  # Avoid re-downloading
+            print(f"Downloading {filename}...")
+            gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
+
+
     # Get emissions inputs & selected emulators
     co2 = emissions_ui()
     selected_emulators, emulator_colors = emulator_ui()
@@ -216,39 +237,38 @@ def main():
         mapbox_style="carto-positron",  # Clean Mapbox style
     )
 
-    # Define Florida coastal locations (approximate lat/lon)
-    coastal_locations = {
-        "Miami": (25.7617, -80.1918),
-        "Fort Lauderdale": (26.1224, -80.1373),
-        "West Palm Beach": (26.7153, -80.0534),
-        "Naples": (26.1420, -81.7948),
-        "Tampa": (27.9506, -82.4572),
-        "Sarasota": (27.3364, -82.5307),
-        "Fort Myers": (26.6406, -81.8723),
-        "St. Petersburg": (27.7676, -82.6403),
-        "Daytona Beach": (29.2108, -81.0228),
-        "Jacksonville": (30.3322, -81.6557),
-        "Pensacola": (30.4213, -87.2169),
-        "Key West": (24.5551, -81.7800)
+    shapefile_path = os.path.join(shp_folder, "ne_10m_coastline.shp")
+    coastline = gpd.read_file(shapefile_path)
+    coastline = coastline[coastline["featurecla"] == "Coastline"] 
+
+    florida_bounds = {
+        "lon_min": -84.6,  # Westernmost point (Pensacola)
+        "lon_max": -80.0,  # Easternmost point (Atlantic Coast)
+        "lat_min": 24.5,   # Southernmost point (Key West)
+        "lat_max": 31.0,   # Northernmost point (Georgia border)
     }
 
-    # Convert to DataFrame
-    df_coastal = pd.DataFrame(coastal_locations).T.reset_index()
-    df_coastal.columns = ["City", "Latitude", "Longitude"]
+    florida_coast = coastline.cx[
+        florida_bounds["lon_min"]:florida_bounds["lon_max"], 
+        florida_bounds["lat_min"]:florida_bounds["lat_max"]
+    ]
 
-    # TODO: Change to TAS then to CO2 -> For now just a placeholder
-    # Predict sea level rise for each coastal city
+    coast_points = florida_coast.explode(index_parts=True)  # Convert lines to separate points
+    coast_points = coast_points.geometry.apply(lambda geom: list(geom.coords) if geom.geom_type == "LineString" else None)
+    coast_points = coast_points.explode().dropna().reset_index(drop=True)
+
+
+    df_coastal = pd.DataFrame(coast_points.tolist(), columns=["Longitude", "Latitude"])
+
+    # # TODO: Change to TAS then to CO2 -> For now just a placeholder
+    # # Predict sea level rise for each coastal city
     df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
-    # WORK IN PROGRESS
     tas_global_mean = gp_emulator(co2).reshape(-1, 1)
 
     # GP Model
-    # The output units of hist_model (Linear Regression model) depend on how it was trained. If hist_model was trained to predict sea level rise in meters (m) or millimeters (mm) using temperature as input, then its output will be in that unit.
-    df_coastal["GP Sea Level Rise (mm)"] = np.round(hist_model.predict(tas_global_mean)[-1][0], 2) # Giving it Kelvin Temperature
-        #Is it in mm??? I am so confused.
+    df_coastal["GP Sea Level Rise (mm)"] = np.round(hist_model.predict(tas_global_mean)[-1][0], 2)
 
-    # If "Pattern Scaling" is selected, add it to the map
     if "Pattern Scaling" in selected_emulators:
         # Add coastal cities with predicted sea level rise to the map
         fig.add_trace(px.scatter_mapbox(
