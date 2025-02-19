@@ -31,7 +31,7 @@ def year_ui():
 # Sidebar for emissions input
 def emissions_ui():
     st.sidebar.markdown("# Emissions")
-    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2) in 2100", 3340, max_co2, 6420, 10)
+    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 3340, max_co2, 6420, 10)
     return co2
 
 
@@ -287,6 +287,7 @@ def main():
     st.subheader("Projected Sea Level Rise for Florida Under SSP245")
     st.write(f"Selected Year: {year}")
     st.plotly_chart(fig)
+    # st.snow()
 
 if __name__ == "__main__":
     main()
