@@ -234,7 +234,6 @@ def main():
         lat=[27.9944024],  # Central latitude of Florida
         lon=[-81.7602544],  # Central longitude of Florida
         zoom=5,  # Zoom level to fit Florida
-        mapbox_style="carto-positron",  # Clean Mapbox style
     )
 
     shapefile_path = os.path.join(shp_folder, "ne_10m_coastline.shp")
