@@ -122,10 +122,10 @@ def line_plot(df, year):
     ))
 
     fig.update_layout(
-        title=dict(
-            text="Sea Level Rise Projection with Uncertainty",  # Title Text
-            font=dict(color="black")  # Title text color
-        ),
+        # title=dict(
+        #     text="Sea Level Rise Projection with Uncertainty",  # Title Text
+        #     font=dict(color="black")  # Title text color
+        # ),
         xaxis=dict(
             title="Year",  # X-axis title
             title_font=dict(color="black"),  # X-axis title color
@@ -155,9 +155,6 @@ def main():
     st.title("Florida Sea Level Rise Projection")
 
     year = year_ui()
-
-    st.subheader("Projected Sea Level Rise for Florida SSP245")
-    st.write(f"Selected Year: {year}")
 
     # Google Drive File IDs for each shapefile component
     file_ids = {
@@ -229,8 +226,12 @@ def main():
         ).data[0]
         fig.add_trace(gp_trace)
 
+        st.subheader("Sea Level Rise Projection with Uncertainty")
+        st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
         line_plot(gp_df, year)
 
+    st.subheader("Projected Sea Level Rise for Florida Under SSP245")
+    st.write(f"Selected Year: {year}")
     st.plotly_chart(fig)
 
 if __name__ == "__main__":
