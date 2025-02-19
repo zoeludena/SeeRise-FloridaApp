@@ -15,3 +15,4 @@ h5netcdf
 esem
 gpflow
 geopandas
+dask
