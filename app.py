@@ -116,7 +116,7 @@ def gp_emulator(co2):
         os.path.join(data_path, 'inputs_ssp585.nc'),
         os.path.join(data_path, 'inputs_ssp126.nc'),
         os.path.join(data_path, 'inputs_ssp370.nc')
-    ], decode_times=False).compute()
+    ], engine="netcdf4").compute()
 
     Y = xr.concat([
         xr.open_dataset(os.path.join(data_path, 'outputs_historical.nc'), engine="netcdf4").sel(member=2),
@@ -230,10 +230,11 @@ def main():
     hist_model = train_linear_regression()
 
     # Create a Mapbox map centered on Florida
-    fig = px.scatter_map(
+    fig = px.scatter_mapbox(
         lat=[27.9944024],  # Central latitude of Florida
         lon=[-81.7602544],  # Central longitude of Florida
         zoom=5,  # Zoom level to fit Florida
+        mapbox_style="carto-positron",  # Clean Mapbox style
     )
 
     shapefile_path = os.path.join(shp_folder, "ne_10m_coastline.shp")
@@ -261,25 +262,25 @@ def main():
 
     # # TODO: Change to TAS then to CO2 -> For now just a placeholder
     # # Predict sea level rise for each coastal city
-    # df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
+    df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
 
     tas_global_mean = gp_emulator(co2).reshape(-1, 1)
 
     # GP Model
     df_coastal["GP Sea Level Rise (mm)"] = np.round(hist_model.predict(tas_global_mean)[-1][0], 2)
 
-    # if "Pattern Scaling" in selected_emulators:
-    #     # Add coastal cities with predicted sea level rise to the map
-    #     fig.add_trace(px.scatter_map(
-    #         df_coastal,
-    #         lat="Latitude",
-    #         lon="Longitude",
-    #         color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
-    #         hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
-    #     ).data[0])
+    if "Pattern Scaling" in selected_emulators:
+        # Add coastal cities with predicted sea level rise to the map
+        fig.add_trace(px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
+            hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
+        ).data[0])
 
     if "Gaussian Process" in selected_emulators:
-        fig.add_trace(px.scatter_map(
+        fig.add_trace(px.scatter_mapbox(
             df_coastal,
             lat="Latitude",
             lon="Longitude",
