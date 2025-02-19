@@ -18,6 +18,7 @@ import time
 import urllib.request
 import tarfile
 import os
+import plotly.graph_objects as go
 
 max_co2 = 9500
 
@@ -55,9 +56,101 @@ def emulator_ui():
 
     return selected_emulator, {selected_emulator: color}
 
+import numpy as np
+import plotly.graph_objects as go
+import streamlit as st
 
+def line_plot(df, year):
+    # Mask for showing past vs. future data
+    mask_past = df[df["year"] <= year]
+    mask_future = df[df["year"] > year]
 
-# Main app function
+    # Create the plot
+    fig = go.Figure()
+
+    # --- Plot Median Line for Past ---
+    fig.add_trace(go.Scatter(
+        x=mask_past["year"], y=mask_past['50q_dH_dT'],
+        mode='lines', name="Median Projection",
+        line=dict(color="blue", width=2)
+    ))
+
+    # --- Plot Uncertainty Bands (5th-95th and 17th-83rd) for Past ---
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([mask_past["year"], mask_past["year"][::-1]]),
+        y=np.concatenate([mask_past["95q_dH_dT"], mask_past["5q_dH_dT"][::-1]]),
+        fill='toself', fillcolor='rgba(0, 0, 255, 0.2)', 
+        line=dict(color='rgba(255,255,255,0)'),
+        name="90% Uncertainty (5th-95th)",
+        hoverinfo="skip"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([mask_past["year"], mask_past["year"][::-1]]),
+        y=np.concatenate([mask_past["83q_dH_dT"], mask_past["17q_dH_dT"][::-1]]),
+        fill='toself', fillcolor='rgba(0, 0, 255, 0.3)', 
+        line=dict(color='rgba(255,255,255,0)'),
+        name="66% Uncertainty (17th-83rd)",
+        hoverinfo="skip"
+    ))
+
+    # --- Gray Out Future Data ---
+    fig.add_trace(go.Scatter(
+        x=mask_future["year"], y=mask_future['50q_dH_dT'],
+        mode='lines', name="Future Projection",
+        line=dict(color="gray", dash="dot", width=2),
+        hoverinfo="skip"
+    ))
+
+    # --- Gray Out Future Uncertainty ---
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([mask_future["year"], mask_future["year"][::-1]]),
+        y=np.concatenate([mask_future["95q_dH_dT"], mask_future["5q_dH_dT"][::-1]]),
+        fill='toself', fillcolor='rgba(169, 169, 169, 0.2)',  # Light gray fill
+        line=dict(color='rgba(255,255,255,0)'),
+        name="Future 90% Uncertainty",
+        hoverinfo="skip"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([mask_future["year"], mask_future["year"][::-1]]),
+        y=np.concatenate([mask_future["83q_dH_dT"], mask_future["17q_dH_dT"][::-1]]),
+        fill='toself', fillcolor='rgba(169, 169, 169, 0.3)',  # Light gray fill
+        line=dict(color='rgba(255,255,255,0)'),
+        name="Future 66% Uncertainty",
+        hoverinfo="skip"
+    ))
+
+    fig.update_layout(
+        title=dict(
+            text="Sea Level Rise Projection with Uncertainty",  # Title Text
+            font=dict(color="black")  # Title text color
+        ),
+        xaxis=dict(
+            title="Year",  # X-axis title
+            title_font=dict(color="black"),  # X-axis title color
+            tickfont=dict(color="black"),  # X-axis tick labels color
+            range=[2015, 2100]
+        ),
+        yaxis=dict(
+            title="Sea Level (mm)",  # Y-axis title
+            title_font=dict(color="black"),  # Y-axis title color
+            tickfont=dict(color="black"),  # Y-axis tick labels color
+            range=[df["5q_dH_dT"].min() - 5, df["95q_dH_dT"].max() + 5]
+        ),
+        showlegend=True,
+        legend=dict(
+                font=dict(color="black"),  # Legend text color
+                # bgcolor="white",            # Legend background color
+                # bordercolor="white",        # Border color
+                # borderwidth=2               # Border thickness
+            ),
+        paper_bgcolor="white",  # Outer background (outside the graph)
+        plot_bgcolor="white",       # Inner plot background (inside the graph)
+)
+
+    st.plotly_chart(fig)
+
 def main():
     st.title("Florida Sea Level Rise Projection")
 
@@ -136,7 +229,8 @@ def main():
         ).data[0]
         fig.add_trace(gp_trace)
 
-    # Display the map in Streamlit
+        line_plot(gp_df, year)
+
     st.plotly_chart(fig)
 
 if __name__ == "__main__":
