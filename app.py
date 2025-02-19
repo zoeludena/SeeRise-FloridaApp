@@ -116,7 +116,7 @@ def gp_emulator(co2):
         os.path.join(data_path, 'inputs_ssp585.nc'),
         os.path.join(data_path, 'inputs_ssp126.nc'),
         os.path.join(data_path, 'inputs_ssp370.nc')
-    ], engine="netcdf4").compute()
+    ], decode_times=False).compute()
 
     Y = xr.concat([
         xr.open_dataset(os.path.join(data_path, 'outputs_historical.nc'), engine="netcdf4").sel(member=2),
