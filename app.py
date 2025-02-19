@@ -19,6 +19,7 @@ import urllib.request
 import tarfile
 import os
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
 max_co2 = 9500
 
@@ -151,6 +152,55 @@ def line_plot(df, year):
 
     st.plotly_chart(fig)
 
+def plot_horizontal_boxplot(quartiles, emulator):
+    """
+    Creates a horizontal box plot showing sea level rise quartiles.
+    - 5th to 95th percentile is the range.
+    - Median (50th percentile) is clearly marked.
+    - 17th and 83rd percentiles are shown below the box plot with dotted lines.
+    - Uses iPhones for size reference (1 iPhone = 7.8 mm).
+    """
+    fig, ax = plt.subplots(figsize=(8, 2))  # Wide and short for readability
+
+    percentiles = [
+        quartiles['5q_dH_dT'], 
+        quartiles['17q_dH_dT'], 
+        quartiles['50q_dH_dT'], 
+        quartiles['83q_dH_dT'], 
+        quartiles['95q_dH_dT']
+    ]
+
+    ax.boxplot(percentiles, vert=False, patch_artist=True, 
+               boxprops=dict(facecolor='lightgrey', color=emulator_colors[emulator]),
+               medianprops=dict(color=emulator_colors[emulator], linewidth=2),
+               whiskerprops=dict(color=emulator_colors[emulator], linewidth=1),
+               capprops=dict(color=emulator_colors[emulator], linewidth=1),
+               flierprops=dict(marker='o', color=emulator_colors[emulator], alpha=0.5))
+
+    # Convert mm to iPhone thickness equivalents
+    iphones = {name: quartiles[name] / 146.6 for name in quartiles.index}
+
+    # Define positions for annotations
+    text_y_above = 1.1  # Above the box plot for 5th, 50th, 95th
+    text_y_below = 0.7  # Below the box plot for 17th, 83rd
+
+    for name in ['5q_dH_dT', '50q_dH_dT', '95q_dH_dT']:
+        value = quartiles[name]
+        ax.text(value, text_y_above, f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)", 
+                horizontalalignment='center', color=emulator_colors[emulator], fontweight='bold')
+
+    for name in ['17q_dH_dT', '83q_dH_dT']:
+        value = quartiles[name]
+        ax.text(value, text_y_below, f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)", 
+                horizontalalignment='center', color=emulator_colors[emulator], fontweight='bold')
+
+    ax.set_xlabel("Sea Level Rise (mm)")
+    ax.set_yticks([])
+    plt.grid(axis="x", linestyle="--", alpha=0.5)
+
+    return fig
+
+
 def main():
     st.title("Florida Sea Level Rise Projection")
 
@@ -229,6 +279,10 @@ def main():
         st.subheader("Sea Level Rise Projection with Uncertainty")
         st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
         line_plot(gp_df, year)
+
+        st.subheader(f"GP Projected Sea Level Rise in {year}")
+        box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
+        st.pyplot(box)
 
     st.subheader("Projected Sea Level Rise for Florida Under SSP245")
     st.write(f"Selected Year: {year}")
