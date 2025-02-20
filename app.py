@@ -18,7 +18,7 @@ max_co2 = 9500
 # Sidebar for emissions input
 def emissions_ui():
     st.sidebar.markdown("# Emissions")
-    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 3340, max_co2, 6420, 10)
+    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 3340, max_co2, 4340, 10)
     return co2
 
 
@@ -48,7 +48,6 @@ def emulator_ui():
 def line_plot(df, year):
     # Mask for showing past vs. future data
     mask_past = df[df["year"] <= year]
-    mask_future = df[df["year"] > year]
 
     # Create the plot
     fig = go.Figure()
@@ -79,38 +78,7 @@ def line_plot(df, year):
         hoverinfo="skip"
     ))
 
-    # --- Gray Out Future Data ---
-    fig.add_trace(go.Scatter(
-        x=mask_future["year"], y=mask_future['50q_dH_dT'],
-        mode='lines', name="Future Projection",
-        line=dict(color="gray", dash="dot", width=2),
-        hoverinfo="skip"
-    ))
-
-    # --- Gray Out Future Uncertainty ---
-    fig.add_trace(go.Scatter(
-        x=np.concatenate([mask_future["year"], mask_future["year"][::-1]]),
-        y=np.concatenate([mask_future["95q_dH_dT"], mask_future["5q_dH_dT"][::-1]]),
-        fill='toself', fillcolor='rgba(169, 169, 169, 0.2)',  # Light gray fill
-        line=dict(color='rgba(255,255,255,0)'),
-        name="Future 90% Uncertainty",
-        hoverinfo="skip"
-    ))
-
-    fig.add_trace(go.Scatter(
-        x=np.concatenate([mask_future["year"], mask_future["year"][::-1]]),
-        y=np.concatenate([mask_future["83q_dH_dT"], mask_future["17q_dH_dT"][::-1]]),
-        fill='toself', fillcolor='rgba(169, 169, 169, 0.3)',  # Light gray fill
-        line=dict(color='rgba(255,255,255,0)'),
-        name="Future 66% Uncertainty",
-        hoverinfo="skip"
-    ))
-
     fig.update_layout(
-        # title=dict(
-        #     text="Sea Level Rise Projection with Uncertainty",  # Title Text
-        #     font=dict(color="black")  # Title text color
-        # ),
         xaxis=dict(
             title="Year",  # X-axis title
             title_font=dict(color="black"),  # X-axis title color
