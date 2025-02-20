@@ -268,6 +268,64 @@ def main():
         box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
         st.pyplot(box)
 
+    if "Random Forest" == selected_emulator:
+        path = f"data/RF_245/RF_Carbon_{co2}_Preds.csv"
+        rf_df = pd.read_csv(path)
+        rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
+        rf_trace = px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["Random Forest"]],
+            hover_data={
+                "Latitude": False,
+                "Longitude": False,
+                "RF Sea Level Rise (mm)": np.round(
+                    [rf_quartiles["50q_dH_dT"]] * len(df_coastal), 2
+                ),
+            },
+        ).data[0]
+        fig.add_trace(rf_trace)
+
+        st.subheader("Sea Level Rise Projection with Uncertainty")
+        st.write(
+            "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
+        )
+        line_plot(rf_df, year)
+
+        st.subheader(f"RF Projected Sea Level Rise in {year}")
+        box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
+        st.pyplot(box)
+
+    if "CNN-LTSM" == selected_emulator:
+        path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
+        cnn_df = pd.read_csv(path)
+        cnn_quartiles = cnn_df[cnn_df["year"] == year].iloc[0, 1:]
+        cnn_trace = px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["CNN-LTSM"]],
+            hover_data={
+                "Latitude": False,
+                "Longitude": False,
+                "RF Sea Level Rise (mm)": np.round(
+                    [cnn_quartiles["50q_dH_dT"]] * len(df_coastal), 2
+                ),
+            },
+        ).data[0]
+        fig.add_trace(cnn_trace)
+
+        st.subheader("Sea Level Rise Projection with Uncertainty")
+        st.write(
+            "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
+        )
+        line_plot(cnn_df, year)
+
+        st.subheader(f"CNN Projected Sea Level Rise in {year}")
+        box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
+        st.pyplot(box)
+
     st.subheader("Projected Sea Level Rise for Florida Under SSP245")
     st.write(f"Selected Year: {year}")
     st.plotly_chart(fig)
