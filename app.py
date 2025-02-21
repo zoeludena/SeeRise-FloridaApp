@@ -161,11 +161,11 @@ def main():
 
     st.write("This application predicts the sea level rise in the year 2100 under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
 
-    with st.expander("Click to learn about SSP 245"):
+    with st.expander("🗣️ Click to learn about SSP 245"):
         st.write("SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100.")
         st.write("Let's break down what that means...")
         st.write("Shared Socioeconomic Pathway 2 represents moderate global trends in population growth, economic development, and technology. So it is neither extreme sustainability nor extreme fossil-fuel reliance. There would be continued economic and population growth, but with persistent inequalities. There is also a mix of renewable and fossil-fuel-based energy sources.")
-        st.write("We believe this is the most probable future. It's common name is also the Middle of the Road Scenario.")
+        st.write("We believe this is the most probable future. It's common name is the Middle of the Road Scenario.")
         st.write("RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100).")
         st.write("This allows the temperature to rise a little more that what the Paris Agreement hopes for.")
 
