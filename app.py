@@ -10,14 +10,9 @@ import matplotlib.pyplot as plt
 
 max_co2 = 9500
 
-# def year_ui():
-#     st.sidebar.markdown("# Year")
-#     year = st.sidebar.slider("Choose a year:", 2015, 2100, 2025, 1)
-#     return year
 
-# Sidebar for emissions input
 def emissions_ui():
-    st.sidebar.markdown("# Emissions")
+    st.sidebar.markdown("# Emissions 🌫️")
     co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 3340, max_co2, 4340, 10)
     return co2
 
@@ -30,7 +25,7 @@ emulator_colors = {
 }
 
 def emulator_ui():
-    st.sidebar.markdown("# Select Emulator")
+    st.sidebar.markdown("# Select Emulator 👇")
 
 
     selected_emulator = st.sidebar.radio(
@@ -154,7 +149,13 @@ def plot_horizontal_boxplot(quartiles, emulator):
 
 
 def main():
-    st.title("Florida Sea Level Rise Projection")
+    st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
+
+    st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
+
+    st.write("This application predicts the sea level rise in the year 2100 under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
+
+    st.write("You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature in 2100 🌡️. From there we predicted the sea level rise using linear regression.")
 
     year = 2100
 
@@ -228,9 +229,9 @@ def main():
         ).data[0]
         fig.add_trace(gp_trace)
 
-        st.subheader("Sea Level Rise Projection with Uncertainty")
-        st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
-        line_plot(gp_df, year)
+        # st.subheader("Sea Level Rise Projection with Uncertainty")
+        # st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
+        # line_plot(gp_df, year)
 
         st.subheader(f"GP Projected Sea Level Rise in {year}")
         box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
@@ -255,11 +256,11 @@ def main():
         ).data[0]
         fig.add_trace(rf_trace)
 
-        st.subheader("Sea Level Rise Projection with Uncertainty")
-        st.write(
-            "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
-        )
-        line_plot(rf_df, year)
+        # st.subheader("Sea Level Rise Projection with Uncertainty")
+        # st.write(
+        #     "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
+        # )
+        # line_plot(rf_df, year)
 
         st.subheader(f"RF Projected Sea Level Rise in {year}")
         box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
@@ -288,15 +289,21 @@ def main():
         st.write(
             "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
         )
-        line_plot(cnn_df, year)
+        # line_plot(cnn_df, year)
 
         st.subheader(f"CNN Projected Sea Level Rise in {year}")
         box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
         st.pyplot(box)
 
-    st.subheader("Projected Sea Level Rise for Florida Under SSP245")
-    st.write(f"Selected Year: {year}")
+    st.write("For your convenience we have determined an iPhone 📱 is 146.6mm. Now you can better visualize the sea level rise.")
+
+    st.write("The figure above shows you a box plot of our sea level rise. The median (50th percentile) is a reasonable estimate of sea level rise.")
+
+    st.write("😱 \"Wow, that's scary!\" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.")
+
+    st.subheader("Projected Sea Level Rise for Florida in 2100")
     st.plotly_chart(fig)
+    st.write("Above, you will find another interactive figure. It looks at the elevation of the coastline of Florida. From there you can see how far the sea level will rise.")
     # st.snow()
 
 if __name__ == "__main__":
