@@ -151,9 +151,23 @@ def plot_horizontal_boxplot(quartiles, emulator):
 def main():
     st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
 
+    co2 = emissions_ui()
+
+    selected_emulator, emulator_colors = emulator_ui()
+
+    st.subheader(f"Selected emulator: {selected_emulator}")
+
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
     st.write("This application predicts the sea level rise in the year 2100 under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
+
+    with st.expander("Click to learn about SSP 245"):
+        st.write("SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100.")
+        st.write("Let's break down what that means...")
+        st.write("Shared Socioeconomic Pathway 2 represents moderate global trends in population growth, economic development, and technology. So it is neither extreme sustainability nor extreme fossil-fuel reliance. There would be continued economic and population growth, but with persistent inequalities. There is also a mix of renewable and fossil-fuel-based energy sources.")
+        st.write("We believe this is the most probable future. It's common name is also the Middle of the Road Scenario.")
+        st.write("RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100).")
+        st.write("This allows the temperature to rise a little more that what the Paris Agreement hopes for.")
 
     st.write("You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature in 2100 🌡️. From there we predicted the sea level rise using linear regression.")
 
@@ -177,12 +191,6 @@ def main():
         if not os.path.exists(file_path):  # Avoid re-downloading
             print(f"Downloading {filename}...")
             gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
-
-
-    # Get emissions inputs & selected emulators
-    co2 = emissions_ui()
-
-    selected_emulator, emulator_colors = emulator_ui()
 
     # Create a Mapbox map centered on Florida
     fig = px.scatter_mapbox(
