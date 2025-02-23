@@ -8,6 +8,8 @@ import geopandas as gpd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 from sanibel import plot_sanibel_dem
+from tampa import plot_tampa_dem
+from miami import plot_miami_dem
 
 max_co2 = 9500
 
@@ -183,6 +185,20 @@ def main():
     st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage.")
     st.write("Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.6 meters of sea level rise - this varies a little based on the emulator selected.")
     st.write("This vacation spot could possibly be submerged!")
+
+    if selected_emulator == "Gaussian Process":
+        plot_tampa_dem(sea_level_rise)
+    if "CNN-LTSM" == selected_emulator:
+        plot_tampa_dem(sea_level_rise)
+    if "Random Forest" == selected_emulator:
+        plot_tampa_dem(sea_level_rise)
+
+    if selected_emulator == "Gaussian Process":
+        plot_miami_dem(sea_level_rise)
+    if "CNN-LTSM" == selected_emulator:
+        plot_miami_dem(sea_level_rise)
+    if "Random Forest" == selected_emulator:
+        plot_miami_dem(sea_level_rise)
 
 if __name__ == "__main__":
     main()
