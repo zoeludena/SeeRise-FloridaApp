@@ -42,7 +42,7 @@ def emulator_ui():
     return selected_emulator, {selected_emulator: color}
 
 
-def line_plot(df, year):
+# def line_plot(df, year):
     # Mask for showing past vs. future data
     mask_past = df[df["year"] <= year]
 
@@ -189,69 +189,69 @@ def main():
 
     year = 2100
 
-    # Google Drive File IDs for each shapefile component
-    file_ids = {
-        "ne_10m_coastline.shp": "13FSAfF40llhCUxxG9umplGU_WPJmxEn-",
-        "ne_10m_coastline.dbf": "1Fx3ME7uAHux4hs8G4caw0M8M4iC-11yj",
-        "ne_10m_coastline.prj": "1LudzsqtdTdzp29LYFwBxUI6gvpFwPBJS",
-        "ne_10m_coastline.shx": "1GHbnb7RqGBcXNvd90APDGa-43wMAbwZX"
-    }
+    # # Google Drive File IDs for each shapefile component
+    # file_ids = {
+    #     "ne_10m_coastline.shp": "13FSAfF40llhCUxxG9umplGU_WPJmxEn-",
+    #     "ne_10m_coastline.dbf": "1Fx3ME7uAHux4hs8G4caw0M8M4iC-11yj",
+    #     "ne_10m_coastline.prj": "1LudzsqtdTdzp29LYFwBxUI6gvpFwPBJS",
+    #     "ne_10m_coastline.shx": "1GHbnb7RqGBcXNvd90APDGa-43wMAbwZX"
+    # }
 
-    # Directory to save the shapefile components
-    shp_folder = "data/"
-    os.makedirs(shp_folder, exist_ok=True)
+    # # Directory to save the shapefile components
+    # shp_folder = "data/"
+    # os.makedirs(shp_folder, exist_ok=True)
 
-    # Download each required shapefile component
-    for filename, file_id in file_ids.items():
-        file_path = os.path.join(shp_folder, filename)
-        if not os.path.exists(file_path):  # Avoid re-downloading
-            print(f"Downloading {filename}...")
-            gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
+    # # Download each required shapefile component
+    # for filename, file_id in file_ids.items():
+    #     file_path = os.path.join(shp_folder, filename)
+    #     if not os.path.exists(file_path):  # Avoid re-downloading
+    #         print(f"Downloading {filename}...")
+    #         gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
 
-    # Create a Mapbox map centered on Florida
-    fig = px.scatter_mapbox(
-        lat=[27.9944024],  # Central latitude of Florida
-        lon=[-81.7602544],  # Central longitude of Florida
-        zoom=4.5,  # Zoom level to fit Florida
-        mapbox_style="carto-positron",  # Clean Mapbox style
-    )
+    # # Create a Mapbox map centered on Florida
+    # fig = px.scatter_mapbox(
+    #     lat=[27.9944024],  # Central latitude of Florida
+    #     lon=[-81.7602544],  # Central longitude of Florida
+    #     zoom=4.5,  # Zoom level to fit Florida
+    #     mapbox_style="carto-positron",  # Clean Mapbox style
+    # )
 
-    shapefile_path = os.path.join(shp_folder, "ne_10m_coastline.shp")
-    coastline = gpd.read_file(shapefile_path)
-    coastline = coastline[coastline["featurecla"] == "Coastline"] 
+    # shapefile_path = os.path.join(shp_folder, "ne_10m_coastline.shp")
+    # coastline = gpd.read_file(shapefile_path)
+    # coastline = coastline[coastline["featurecla"] == "Coastline"] 
 
-    florida_bounds = {
-        "lon_min": -84.6,  # Westernmost point (Pensacola)
-        "lon_max": -80.0,  # Easternmost point (Atlantic Coast)
-        "lat_min": 24.5,   # Southernmost point (Key West)
-        "lat_max": 31.0,   # Northernmost point (Georgia border)
-    }
+    # florida_bounds = {
+    #     "lon_min": -84.6,  # Westernmost point (Pensacola)
+    #     "lon_max": -80.0,  # Easternmost point (Atlantic Coast)
+    #     "lat_min": 24.5,   # Southernmost point (Key West)
+    #     "lat_max": 31.0,   # Northernmost point (Georgia border)
+    # }
 
-    florida_coast = coastline.cx[
-        florida_bounds["lon_min"]:florida_bounds["lon_max"], 
-        florida_bounds["lat_min"]:florida_bounds["lat_max"]
-    ]
+    # florida_coast = coastline.cx[
+    #     florida_bounds["lon_min"]:florida_bounds["lon_max"], 
+    #     florida_bounds["lat_min"]:florida_bounds["lat_max"]
+    # ]
 
-    coast_points = florida_coast.explode(index_parts=True)  # Convert lines to separate points
-    coast_points = coast_points.geometry.apply(lambda geom: list(geom.coords) if geom.geom_type == "LineString" else None)
-    coast_points = coast_points.explode().dropna().reset_index(drop=True)
+    # coast_points = florida_coast.explode(index_parts=True)  # Convert lines to separate points
+    # coast_points = coast_points.geometry.apply(lambda geom: list(geom.coords) if geom.geom_type == "LineString" else None)
+    # coast_points = coast_points.explode().dropna().reset_index(drop=True)
 
 
-    df_coastal = pd.DataFrame(coast_points.tolist(), columns=["Longitude", "Latitude"])
+    # df_coastal = pd.DataFrame(coast_points.tolist(), columns=["Longitude", "Latitude"])
 
     if "Gaussian Process" == selected_emulator:
         path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
         gp_df = pd.read_csv(path)
         gp_quartiles = gp_df[gp_df["year"] == year].iloc[0, 1:]
-        gp_trace = px.scatter_mapbox(
-            df_coastal,
-            lat="Latitude",
-            lon="Longitude",
-            color_discrete_sequence=[emulator_colors["Gaussian Process"]],
-            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (mm)":
-                         np.round([gp_quartiles['50q_dH_dT']]*len(df_coastal), 2)}
-        ).data[0]
-        fig.add_trace(gp_trace)
+        # gp_trace = px.scatter_mapbox(
+        #     df_coastal,
+        #     lat="Latitude",
+        #     lon="Longitude",
+        #     color_discrete_sequence=[emulator_colors["Gaussian Process"]],
+        #     hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (mm)":
+        #                  np.round([gp_quartiles['50q_dH_dT']]*len(df_coastal), 2)}
+        # ).data[0]
+        # fig.add_trace(gp_trace)
 
         # st.subheader("Sea Level Rise Projection with Uncertainty")
         # st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
@@ -268,20 +268,20 @@ def main():
         path = f"data/RF_245/RF_Carbon_{co2}_Preds.csv"
         rf_df = pd.read_csv(path)
         rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
-        rf_trace = px.scatter_mapbox(
-            df_coastal,
-            lat="Latitude",
-            lon="Longitude",
-            color_discrete_sequence=[emulator_colors["Random Forest"]],
-            hover_data={
-                "Latitude": False,
-                "Longitude": False,
-                "RF Sea Level Rise (mm)": np.round(
-                    [rf_quartiles["50q_dH_dT"]] * len(df_coastal), 2
-                ),
-            },
-        ).data[0]
-        fig.add_trace(rf_trace)
+        # rf_trace = px.scatter_mapbox(
+        #     df_coastal,
+        #     lat="Latitude",
+        #     lon="Longitude",
+        #     color_discrete_sequence=[emulator_colors["Random Forest"]],
+        #     hover_data={
+        #         "Latitude": False,
+        #         "Longitude": False,
+        #         "RF Sea Level Rise (mm)": np.round(
+        #             [rf_quartiles["50q_dH_dT"]] * len(df_coastal), 2
+        #         ),
+        #     },
+        # ).data[0]
+        # fig.add_trace(rf_trace)
 
         # st.subheader("Sea Level Rise Projection with Uncertainty")
         # st.write(
@@ -299,20 +299,20 @@ def main():
         path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
         cnn_df = pd.read_csv(path)
         cnn_quartiles = cnn_df[cnn_df["year"] == year].iloc[0, 1:]
-        cnn_trace = px.scatter_mapbox(
-            df_coastal,
-            lat="Latitude",
-            lon="Longitude",
-            color_discrete_sequence=[emulator_colors["CNN-LTSM"]],
-            hover_data={
-                "Latitude": False,
-                "Longitude": False,
-                "RF Sea Level Rise (mm)": np.round(
-                    [cnn_quartiles["50q_dH_dT"]] * len(df_coastal), 2
-                ),
-            },
-        ).data[0]
-        fig.add_trace(cnn_trace)
+        # cnn_trace = px.scatter_mapbox(
+        #     df_coastal,
+        #     lat="Latitude",
+        #     lon="Longitude",
+        #     color_discrete_sequence=[emulator_colors["CNN-LTSM"]],
+        #     hover_data={
+        #         "Latitude": False,
+        #         "Longitude": False,
+        #         "RF Sea Level Rise (mm)": np.round(
+        #             [cnn_quartiles["50q_dH_dT"]] * len(df_coastal), 2
+        #         ),
+        #     },
+        # ).data[0]
+        # fig.add_trace(cnn_trace)
 
         # st.subheader("Sea Level Rise Projection with Uncertainty")
         # st.write(
