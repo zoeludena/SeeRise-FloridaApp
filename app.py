@@ -42,65 +42,6 @@ def emulator_ui():
     return selected_emulator, {selected_emulator: color}
 
 
-# def line_plot(df, year):
-    # Mask for showing past vs. future data
-    mask_past = df[df["year"] <= year]
-
-    # Create the plot
-    fig = go.Figure()
-
-    # --- Plot Median Line for Past ---
-    fig.add_trace(go.Scatter(
-        x=mask_past["year"], y=mask_past['50q_dH_dT'],
-        mode='lines', name="Median Projection",
-        line=dict(color="blue", width=2)
-    ))
-
-    # --- Plot Uncertainty Bands (5th-95th and 17th-83rd) for Past ---
-    fig.add_trace(go.Scatter(
-        x=np.concatenate([mask_past["year"], mask_past["year"][::-1]]),
-        y=np.concatenate([mask_past["95q_dH_dT"], mask_past["5q_dH_dT"][::-1]]),
-        fill='toself', fillcolor='rgba(0, 0, 255, 0.2)', 
-        line=dict(color='rgba(255,255,255,0)'),
-        name="90% Uncertainty (5th-95th)",
-        hoverinfo="skip"
-    ))
-
-    fig.add_trace(go.Scatter(
-        x=np.concatenate([mask_past["year"], mask_past["year"][::-1]]),
-        y=np.concatenate([mask_past["83q_dH_dT"], mask_past["17q_dH_dT"][::-1]]),
-        fill='toself', fillcolor='rgba(0, 0, 255, 0.3)', 
-        line=dict(color='rgba(255,255,255,0)'),
-        name="66% Uncertainty (17th-83rd)",
-        hoverinfo="skip"
-    ))
-
-    fig.update_layout(
-        xaxis=dict(
-            title="Year",  # X-axis title
-            title_font=dict(color="black"),  # X-axis title color
-            tickfont=dict(color="black"),  # X-axis tick labels color
-            range=[2015, 2100]
-        ),
-        yaxis=dict(
-            title="Sea Level (mm)",  # Y-axis title
-            title_font=dict(color="black"),  # Y-axis title color
-            tickfont=dict(color="black"),  # Y-axis tick labels color
-            range=[df["5q_dH_dT"].min() - 5, df["95q_dH_dT"].max() + 5]
-        ),
-        showlegend=True,
-        legend=dict(
-                font=dict(color="black"),  # Legend text color
-                # bgcolor="white",            # Legend background color
-                # bordercolor="white",        # Border color
-                # borderwidth=2               # Border thickness
-            ),
-        paper_bgcolor="white",  # Outer background (outside the graph)
-        plot_bgcolor="white",       # Inner plot background (inside the graph)
-)
-
-    st.plotly_chart(fig)
-
 def plot_horizontal_boxplot(quartiles, emulator):
     """
     Creates a horizontal box plot showing sea level rise quartiles.
@@ -189,74 +130,10 @@ def main():
 
     year = 2100
 
-    # # Google Drive File IDs for each shapefile component
-    # file_ids = {
-    #     "ne_10m_coastline.shp": "13FSAfF40llhCUxxG9umplGU_WPJmxEn-",
-    #     "ne_10m_coastline.dbf": "1Fx3ME7uAHux4hs8G4caw0M8M4iC-11yj",
-    #     "ne_10m_coastline.prj": "1LudzsqtdTdzp29LYFwBxUI6gvpFwPBJS",
-    #     "ne_10m_coastline.shx": "1GHbnb7RqGBcXNvd90APDGa-43wMAbwZX"
-    # }
-
-    # # Directory to save the shapefile components
-    # shp_folder = "data/"
-    # os.makedirs(shp_folder, exist_ok=True)
-
-    # # Download each required shapefile component
-    # for filename, file_id in file_ids.items():
-    #     file_path = os.path.join(shp_folder, filename)
-    #     if not os.path.exists(file_path):  # Avoid re-downloading
-    #         print(f"Downloading {filename}...")
-    #         gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
-
-    # # Create a Mapbox map centered on Florida
-    # fig = px.scatter_mapbox(
-    #     lat=[27.9944024],  # Central latitude of Florida
-    #     lon=[-81.7602544],  # Central longitude of Florida
-    #     zoom=4.5,  # Zoom level to fit Florida
-    #     mapbox_style="carto-positron",  # Clean Mapbox style
-    # )
-
-    # shapefile_path = os.path.join(shp_folder, "ne_10m_coastline.shp")
-    # coastline = gpd.read_file(shapefile_path)
-    # coastline = coastline[coastline["featurecla"] == "Coastline"] 
-
-    # florida_bounds = {
-    #     "lon_min": -84.6,  # Westernmost point (Pensacola)
-    #     "lon_max": -80.0,  # Easternmost point (Atlantic Coast)
-    #     "lat_min": 24.5,   # Southernmost point (Key West)
-    #     "lat_max": 31.0,   # Northernmost point (Georgia border)
-    # }
-
-    # florida_coast = coastline.cx[
-    #     florida_bounds["lon_min"]:florida_bounds["lon_max"], 
-    #     florida_bounds["lat_min"]:florida_bounds["lat_max"]
-    # ]
-
-    # coast_points = florida_coast.explode(index_parts=True)  # Convert lines to separate points
-    # coast_points = coast_points.geometry.apply(lambda geom: list(geom.coords) if geom.geom_type == "LineString" else None)
-    # coast_points = coast_points.explode().dropna().reset_index(drop=True)
-
-
-    # df_coastal = pd.DataFrame(coast_points.tolist(), columns=["Longitude", "Latitude"])
-
     if "Gaussian Process" == selected_emulator:
         path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
         gp_df = pd.read_csv(path)
         gp_quartiles = gp_df[gp_df["year"] == year].iloc[0, 1:]
-        # gp_trace = px.scatter_mapbox(
-        #     df_coastal,
-        #     lat="Latitude",
-        #     lon="Longitude",
-        #     color_discrete_sequence=[emulator_colors["Gaussian Process"]],
-        #     hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (mm)":
-        #                  np.round([gp_quartiles['50q_dH_dT']]*len(df_coastal), 2)}
-        # ).data[0]
-        # fig.add_trace(gp_trace)
-
-        # st.subheader("Sea Level Rise Projection with Uncertainty")
-        # st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
-        # line_plot(gp_df, year)
-
         st.subheader(f"GP Projected Sea Level Rise")
         box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
         st.pyplot(box)
@@ -268,27 +145,6 @@ def main():
         path = f"data/RF_245/RF_Carbon_{co2}_Preds.csv"
         rf_df = pd.read_csv(path)
         rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
-        # rf_trace = px.scatter_mapbox(
-        #     df_coastal,
-        #     lat="Latitude",
-        #     lon="Longitude",
-        #     color_discrete_sequence=[emulator_colors["Random Forest"]],
-        #     hover_data={
-        #         "Latitude": False,
-        #         "Longitude": False,
-        #         "RF Sea Level Rise (mm)": np.round(
-        #             [rf_quartiles["50q_dH_dT"]] * len(df_coastal), 2
-        #         ),
-        #     },
-        # ).data[0]
-        # fig.add_trace(rf_trace)
-
-        # st.subheader("Sea Level Rise Projection with Uncertainty")
-        # st.write(
-        #     "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
-        # )
-        # line_plot(rf_df, year)
-
         st.subheader(f"RF Projected Sea Level Rise")
         box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
         st.pyplot(box)
@@ -299,27 +155,6 @@ def main():
         path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
         cnn_df = pd.read_csv(path)
         cnn_quartiles = cnn_df[cnn_df["year"] == year].iloc[0, 1:]
-        # cnn_trace = px.scatter_mapbox(
-        #     df_coastal,
-        #     lat="Latitude",
-        #     lon="Longitude",
-        #     color_discrete_sequence=[emulator_colors["CNN-LTSM"]],
-        #     hover_data={
-        #         "Latitude": False,
-        #         "Longitude": False,
-        #         "RF Sea Level Rise (mm)": np.round(
-        #             [cnn_quartiles["50q_dH_dT"]] * len(df_coastal), 2
-        #         ),
-        #     },
-        # ).data[0]
-        # fig.add_trace(cnn_trace)
-
-        # st.subheader("Sea Level Rise Projection with Uncertainty")
-        # st.write(
-        #     "Change the CO2 slider to reveal the median sea level rise (mm)."
-        # )
-        # line_plot(cnn_df, year)
-
         st.subheader(f"CNN Projected Sea Level Rise")
         box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
         st.pyplot(box)
@@ -340,11 +175,6 @@ def main():
         plot_sanibel_dem(sea_level_rise)
     if "Random Forest" == selected_emulator:
         plot_sanibel_dem(sea_level_rise)
-
-    # st.subheader("Projected Sea Level Rise for Florida")
-    # st.plotly_chart(fig)
-    # st.write("Above, you will find another interactive figure. It looks at the elevation of the coastline of Florida. From there you can see how far the sea level will rise.")
-    # st.snow()
 
 if __name__ == "__main__":
     main()

@@ -3,9 +3,11 @@ import rasterio
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+import os
 
-# Path to DEM file
-DEM_PATH = "Sanibel/sanibel.dem"
+# Get absolute path to Sanibel.dem
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get current directory
+DEM_PATH = os.path.join(BASE_DIR, "Sanibel", "Sanibel.dem")  # Ensure correct casing
 
 def plot_sanibel_dem(sea_level):
     """
