@@ -1,204 +1,192 @@
 import streamlit as st
 import numpy as np
-import tensorflow as tf
-import xarray as xr
 import plotly.express as px
-from sklearn.linear_model import LinearRegression
 import os
-import urllib
-import tarfile
 import pandas as pd
-import xarray as xr
-from eofs.xarray import Eof
 import gdown
-from esem import gp_model
 import geopandas as gpd
+import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
-max_co2 = 9500.
-max_ch4 = 0.8
-max_so2 = 90.
-max_bc = 9.
-
-normalize_co2 = lambda data: data / max_co2
-normalize_ch4 = lambda data: data / max_ch4
+max_co2 = 9500
 
 
-# Define Google Drive file IDs
-file_ids = {
-    "inputs_historical.nc": "1z0OxBEBFNOknn1W6mGwNqQ9NocFCb9Q1",
-    "inputs_ssp126.nc": "1KNA6VcuNaACNTFzJRyt3RwH2sDoZnTZG",
-    "inputs_ssp245.nc": "1mgyUzx6m4Jl5Nmvzw7ejmsshhTg4x82T",
-    "inputs_ssp370.nc": "1DgyGrMVLxKo7aVAJgHC1kk_wgFCoN4H7",
-    "inputs_ssp585.nc": "1XgZ12hLxd-dP7_09jjaHqX4TxUA66hox",
-    "outputs_historical.nc": "1QmDcFjWX4dohh4ZqW5Ga4GS5k9_iC8Zl",
-    "outputs_ssp126.nc": "1QwRxX0ZcG4nEtMlwm-_km4mVgG2RCKqL",
-    "outputs_ssp245.nc": "1-eCNMpVtDlHHX7AN3vhzTONOM7HuuFZ9",
-    "outputs_ssp370.nc": "1sL4anpD9JnnqVV52vDSqE5gnOIY-HpXt",
-    "outputs_ssp585.nc": "1SHZLAZdd3Mbyr0ZXBG5ODBzXXmJ9KLh1",
-}
-
-# Directory to save downloaded files
-data_dir = "data"
-os.makedirs(data_dir, exist_ok=True)
-
-def download_nc_files():
-    for filename, file_id in file_ids.items():
-        file_path = os.path.join(data_dir, filename)
-
-        if not os.path.exists(file_path):  # Check if file already exists
-            url = f"https://drive.google.com/uc?id={file_id}"
-            print(f"Downloading {filename}...")
-            gdown.download(url, file_path, quiet=False)
-        else:
-            print(f"{filename} already exists, skipping...")
-
-
-# File to download
-DATA = {
-    "climate_historical_data.tar.gz": {
-        "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/climate_historical_data.tar.gz",
-        "description": "Historical Climate Data (1901-2014)",
-        "extract": True,
-    },
-}
-
-import streamlit as st
-import time
-import urllib.request
-import tarfile
-import os
-
-def download_and_extract():
-    for filename, info in DATA.items():
-        if not os.path.exists(filename):
-            urllib.request.urlretrieve(info["url"], filename)
-
-        # Extract if needed
-        if info.get("extract", False):
-            with tarfile.open(filename, "r:gz") as tar:
-                tar.extractall()
-
-def load_historical_data():
-    download_and_extract()  # Ensure files are downloaded before loading
-
-    # Load historical climate data
-    X_hist = np.load("X_hist.npy")  # Shape: (Time Steps, 1)
-    y = np.load("y.npy")  # Shape: (Time Steps, 1)
-    
-    return X_hist, y
-
-@st.cache_resource
-def train_linear_regression():
-    X_hist, y = load_historical_data()  # Load historical data
-    hist_model = LinearRegression()
-    hist_model.fit(X_hist, y)  # Train model
-    return hist_model
-
-def gp_emulator(co2):
-    download_nc_files()  # Ensure .nc files are downloaded
-
-    data_path = "data/"  
-
-    required_files = [
-        'inputs_historical.nc', 'inputs_ssp585.nc',
-        'inputs_ssp126.nc', 'inputs_ssp370.nc',
-        'outputs_historical.nc', 'outputs_ssp585.nc',
-        'outputs_ssp245.nc', 'inputs_ssp245.nc'
-    ]
-
-    missing_files = [f for f in required_files if not os.path.exists(os.path.join(data_path, f))]
-    if missing_files:
-        raise FileNotFoundError(f"Missing files: {missing_files}. Ensure all .nc files are downloaded.")
-
-    # Load training data
-    X = xr.open_mfdataset([
-        os.path.join(data_path, 'inputs_historical.nc'),
-        os.path.join(data_path, 'inputs_ssp585.nc'),
-        os.path.join(data_path, 'inputs_ssp126.nc'),
-        os.path.join(data_path, 'inputs_ssp370.nc')
-    ], engine="netcdf4").compute()
-
-    Y = xr.concat([
-        xr.open_dataset(os.path.join(data_path, 'outputs_historical.nc'), engine="netcdf4").sel(member=2),
-        xr.open_dataset(os.path.join(data_path, 'outputs_ssp585.nc'), engine="netcdf4").sel(member=1)
-    ], dim='time').compute()
-
-    # Ensure input & output data have the same number of samples
-    min_samples = min(len(X["CO2"].data), len(Y["tas"].data))
-    X = X.isel(time=slice(0, min_samples))  # Trim inputs
-    Y = Y.isel(time=slice(0, min_samples))  # Trim outputs
-
-    # EOF Analysis
-    bc_solver = Eof(X['BC'])
-    bc_pcs = bc_solver.pcs(npcs=5, pcscaling=1)
-    so2_solver = Eof(X['SO2'])
-    so2_pcs = so2_solver.pcs(npcs=5, pcscaling=1)
-
-    bc_df = bc_pcs.to_dataframe().unstack('mode')
-    bc_df.columns = [f"BC_{i}" for i in range(5)]
-    so2_df = so2_pcs.to_dataframe().unstack('mode')
-    so2_df.columns = [f"SO2_{i}" for i in range(5)]
-
-    # **Modify input data to use selected CO₂ value**
-    leading_historical_inputs = pd.DataFrame({
-        "CO2": normalize_co2(np.full((min_samples,), co2)),  # Ensure correct shape
-        "CH4": normalize_ch4(X["CH4"].data[:min_samples])  # Keep CH₄ constant
-    }, index=X["CO2"].coords['time'].data[:min_samples])
-
-    leading_historical_inputs = pd.concat([leading_historical_inputs, bc_df, so2_df], axis=1)
-
-    # Train GP Model
-    tas_gp = gp_model(leading_historical_inputs, Y["tas"])
-    tas_gp.train()
-
-    # Predict global mean temperature based on the selected CO₂ level
-    m_tas, _ = tas_gp.predict(leading_historical_inputs)
-    tas_global_mean = m_tas.mean(dim=("lat", "lon"))
-
-    return tas_global_mean.values
-
-
-
-# Sidebar for emissions input
 def emissions_ui():
-    st.sidebar.markdown("# Emissions")
-    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2) in 2100", 0.0, max_co2, 1800., 10.)
+    st.sidebar.markdown("# Emissions 🌫️")
+    # Change this to start at 0 and end at 9500
+    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 3340, max_co2, 4340, 10)
     return co2
 
+
+emulator_colors = {
+    "Pattern Scaling": "#d55e00",
+    "CNN-LTSM": "#cc79a7", 
+    "Random Forest": "#009e73", 
+    "Gaussian Process": "#0072b2", 
+}
+
 def emulator_ui():
-    st.sidebar.markdown("# Select Emulator")
+    st.sidebar.markdown("# Select Emulator 👇")
 
-    # Define fixed colors for each emulator
-    emulator_colors = {
-        "Pattern Scaling": "#0072b2",
-        "CNN-LTSM": "#d55e00", 
-        "Random Forest": "#cc79a7", 
-        "Gaussian Process": "#009e73", 
-    }
 
-    # Sidebar multiselect for emulator selection
-    selected_emulators = st.sidebar.multiselect(
-        "Choose one or more emulators:",
+    selected_emulator = st.sidebar.radio(
+        "Choose an emulator:",
         list(emulator_colors.keys()),
-        default=list(emulator_colors.keys())[0]
+        index=3  # Default selection
     )
-    st.sidebar.markdown("### Emulator Color")
 
-    # Show color-coded selections below
-    for emulator in selected_emulators:
-        color = emulator_colors[emulator]
-        st.sidebar.markdown(
-            f'<div style="background-color:{color}; padding:5px; border-radius:5px; color:white; text-align:center; margin-bottom:5px;">{emulator}</div>',
-            unsafe_allow_html=True
-        )
+    # Show selected emulator in a color-coded box
+    color = emulator_colors[selected_emulator]
 
-    return selected_emulators, {emulator: emulator_colors[emulator] for emulator in selected_emulators}
+    return selected_emulator, {selected_emulator: color}
 
 
+def line_plot(df, year):
+    # Mask for showing past vs. future data
+    mask_past = df[df["year"] <= year]
 
-# Main app function
+    # Create the plot
+    fig = go.Figure()
+
+    # --- Plot Median Line for Past ---
+    fig.add_trace(go.Scatter(
+        x=mask_past["year"], y=mask_past['50q_dH_dT'],
+        mode='lines', name="Median Projection",
+        line=dict(color="blue", width=2)
+    ))
+
+    # --- Plot Uncertainty Bands (5th-95th and 17th-83rd) for Past ---
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([mask_past["year"], mask_past["year"][::-1]]),
+        y=np.concatenate([mask_past["95q_dH_dT"], mask_past["5q_dH_dT"][::-1]]),
+        fill='toself', fillcolor='rgba(0, 0, 255, 0.2)', 
+        line=dict(color='rgba(255,255,255,0)'),
+        name="90% Uncertainty (5th-95th)",
+        hoverinfo="skip"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([mask_past["year"], mask_past["year"][::-1]]),
+        y=np.concatenate([mask_past["83q_dH_dT"], mask_past["17q_dH_dT"][::-1]]),
+        fill='toself', fillcolor='rgba(0, 0, 255, 0.3)', 
+        line=dict(color='rgba(255,255,255,0)'),
+        name="66% Uncertainty (17th-83rd)",
+        hoverinfo="skip"
+    ))
+
+    fig.update_layout(
+        xaxis=dict(
+            title="Year",  # X-axis title
+            title_font=dict(color="black"),  # X-axis title color
+            tickfont=dict(color="black"),  # X-axis tick labels color
+            range=[2015, 2100]
+        ),
+        yaxis=dict(
+            title="Sea Level (mm)",  # Y-axis title
+            title_font=dict(color="black"),  # Y-axis title color
+            tickfont=dict(color="black"),  # Y-axis tick labels color
+            range=[df["5q_dH_dT"].min() - 5, df["95q_dH_dT"].max() + 5]
+        ),
+        showlegend=True,
+        legend=dict(
+                font=dict(color="black"),  # Legend text color
+                # bgcolor="white",            # Legend background color
+                # bordercolor="white",        # Border color
+                # borderwidth=2               # Border thickness
+            ),
+        paper_bgcolor="white",  # Outer background (outside the graph)
+        plot_bgcolor="white",       # Inner plot background (inside the graph)
+)
+
+    st.plotly_chart(fig)
+
+def plot_horizontal_boxplot(quartiles, emulator):
+    """
+    Creates a horizontal box plot showing sea level rise quartiles.
+    - 5th to 95th percentile is the range.
+    - Median (50th percentile) is clearly marked.
+    - 17th and 83rd percentiles are shown below the box plot with dotted lines.
+    - Uses iPhones for size reference (1 iPhone = 7.8 mm).
+    """
+    fig, ax = plt.subplots(figsize=(8, 2))  # Wide and short for readability
+
+    percentiles = [
+        quartiles['5q_dH_dT'], 
+        quartiles['17q_dH_dT'], 
+        quartiles['50q_dH_dT'], 
+        quartiles['83q_dH_dT'], 
+        quartiles['95q_dH_dT']
+    ]
+
+    ax.boxplot(percentiles, vert=False, patch_artist=True, 
+               boxprops=dict(facecolor='lightgrey', color=emulator_colors[emulator]),
+               medianprops=dict(color=emulator_colors[emulator], linewidth=2),
+               whiskerprops=dict(color=emulator_colors[emulator], linewidth=1),
+               capprops=dict(color=emulator_colors[emulator], linewidth=1),
+               flierprops=dict(marker='o', color=emulator_colors[emulator], alpha=0.5))
+
+    # Convert mm to iPhone thickness equivalents
+    iphones = {name: quartiles[name] / 146.6 for name in quartiles.index}
+
+    # Define positions for annotations
+    text_y_above = 1.1  # Above the box plot for 5th, 50th, 95th
+    text_y_below = 0.7  # Below the box plot for 17th, 83rd
+
+    for name in ['5q_dH_dT', '50q_dH_dT', '95q_dH_dT']:
+        value = quartiles[name]
+        ax.text(value, text_y_above, f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)", 
+                horizontalalignment='center', color=emulator_colors[emulator], fontweight='bold')
+
+    for name in ['17q_dH_dT', '83q_dH_dT']:
+        value = quartiles[name]
+        ax.text(value, text_y_below, f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)", 
+                horizontalalignment='center', color=emulator_colors[emulator], fontweight='bold')
+
+    ax.set_xlabel("Sea Level Rise (mm)")
+    ax.set_yticks([])
+    plt.grid(axis="x", linestyle="--", alpha=0.5)
+
+    return fig
+
+
 def main():
-    st.title("Florida Sea Level Rise Projection")
+    st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
+
+    co2 = emissions_ui()
+
+    selected_emulator, emulator_colors = emulator_ui()
+
+    st.subheader(f"Selected emulator: {selected_emulator}")
+
+    st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
+
+    st.write("This application predicts the sea level rise in the year 2100 under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
+
+    with st.expander("🗣️ Click to learn about SSP 245"):
+        st.write("SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100.")
+        st.write("Let's break down what that means...")
+        st.write("Shared Socioeconomic Pathway 2 represents moderate global trends in population growth, economic development, and technology. So it is neither extreme sustainability nor extreme fossil-fuel reliance. There would be continued economic and population growth, but with persistent inequalities. There is also a mix of renewable and fossil-fuel-based energy sources.")
+        st.write("We believe this is the most probable future. It's common name is the Middle of the Road Scenario.")
+        st.write("RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100).")
+        st.write("This allows the temperature to rise a little more that what the Paris Agreement hopes for.")
+
+    st.write("You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature in 2100 🌡️. From there we predicted the sea level rise using linear regression.")
+
+    with st.expander("Learn about your emulator:"):
+        if selected_emulator == "Pattern Scaling":
+            st.write('The pattern scaling model is the simplest emulator at our disposal. The model consists of many linear regression models trained on global mean temperature in different emission scenarios. These models regress desired variables (precipitation, diurnal temperature range, etc.) on global mean temperature which is the \"scaling\" element of the model. Once trained, the model takes a vector of global mean temperatures from a particular emission scenario, and predicts the desired variables using the inputs. This model is powerful yet simple because it can predict local values of particular variables using only globally averaged inputs.')
+        elif selected_emulator == "Gaussian Process":
+            st.write("A Gaussian Process (GP) model, used in the Climate Bench paper, is a probabilistic framework ideal for regression and classification tasks. GPs model functions by defining a prior characterized by a mean function, m(x), representing the expected value at x, and a covariance function, k(x,x'), which measures similarity between inputs x and x'. Using Bayesian inference, GPs update this prior with training data to produce a posterior distribution. For new inputs, predictions are made as a distribution with a mean (most likely value) and variance (uncertainty estimate).")
+            st.write("GP models are well-suited for climate prediction. Climate systems are governed by complex, smooth, and often nonlinear relationships, which GPs can model through appropriately chosen kernels. Moreover, their ability to provide uncertainty estimates is invaluable when working with limited or noisy climate data, as these estimates can highlight regions where the model is less confident in its predictions. Finally, the interpretability of GP models aligns well with scientific practices, allowing researchers to explore the relationships captured by the covariance function and gain insights into the modeled climate dynamics.")
+        elif selected_emulator == "Random Forest":
+            st.write("Random Forest is an ensemble method that aggregates the predictions of multiple decision trees to enhance predictive performance. Decision trees, as the base models, are particularly effective at capturing non-linear relationships and interactions between variables but are prone to overfitting. Random Forest addresses this limitation by averaging the predictions of all individual trees, which reduces variance and increases robustness. This makes it well-suited for climate model emulation, where separate models are often developed for multiple target variables.")
+            st.write("One key advantage of Random Forest in climate model emulation is its interpretability, which aids in informing decision-making. While a common drawback of Random Forest is its inability to extrapolate beyond the range of training data, this is not a significant concern in this context. Relevant predictions in climate modeling typically lie within the range defined by historical climate data and plausible scenarios, such as the low-emissions SSP126 and high-emissions SSP585 pathways. This makes Random Forest an effective and practical choice for emulating climate models.")
+        else:
+            st.write("A CNN-LSTM model combines Convolutional Neural Networks (CNNs) and Long Short-Term Memory (LSTM) networks to capture spatial and temporal patterns in data. CNNs extract spatial features from input data, while LSTMs process sequential dependencies, making this architecture ideal for spatiotemporal modeling. By leveraging both components, CNN-LSTMs can learn complex relationships in time-series data while preserving spatial structures.")  
+            st.write("CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models.")  
+
+
+    year = 2100
 
     # Google Drive File IDs for each shapefile component
     file_ids = {
@@ -219,21 +207,11 @@ def main():
             print(f"Downloading {filename}...")
             gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
 
-
-    # Get emissions inputs & selected emulators
-    co2 = emissions_ui()
-    selected_emulators, emulator_colors = emulator_ui()
-
-    st.subheader("Projected Sea Level Rise for Florida in 2100")
-
-    # Train the Linear Regression model (Pattern Scaling)
-    hist_model = train_linear_regression()
-
     # Create a Mapbox map centered on Florida
     fig = px.scatter_mapbox(
         lat=[27.9944024],  # Central latitude of Florida
         lon=[-81.7602544],  # Central longitude of Florida
-        zoom=5,  # Zoom level to fit Florida
+        zoom=4.5,  # Zoom level to fit Florida
         mapbox_style="carto-positron",  # Clean Mapbox style
     )
 
@@ -260,56 +238,96 @@ def main():
 
     df_coastal = pd.DataFrame(coast_points.tolist(), columns=["Longitude", "Latitude"])
 
-    # # TODO: Change to TAS then to CO2 -> For now just a placeholder
-    # # Predict sea level rise for each coastal city
-    df_coastal["Sea Level Rise (m)"] = np.round(hist_model.predict(np.array(co2).reshape(-1, 1))[-1][0]/1000, 2) # Make it meters
-
-    tas_global_mean = gp_emulator(co2).reshape(-1, 1)
-
-    # GP Model
-    df_coastal["GP Sea Level Rise (mm)"] = np.round(hist_model.predict(tas_global_mean)[-1][0], 2)
-
-    if "Pattern Scaling" in selected_emulators:
-        # Add coastal cities with predicted sea level rise to the map
-        fig.add_trace(px.scatter_mapbox(
+    if "Gaussian Process" == selected_emulator:
+        path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
+        gp_df = pd.read_csv(path)
+        gp_quartiles = gp_df[gp_df["year"] == year].iloc[0, 1:]
+        gp_trace = px.scatter_mapbox(
             df_coastal,
             lat="Latitude",
             lon="Longitude",
-            color_discrete_sequence=[emulator_colors["Pattern Scaling"]],  # Use predefined color
-            hover_data={"Latitude": False, "Longitude": False, "Sea Level Rise (m)": True}
-        ).data[0])
+            color_discrete_sequence=[emulator_colors["Gaussian Process"]],
+            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (mm)":
+                         np.round([gp_quartiles['50q_dH_dT']]*len(df_coastal), 2)}
+        ).data[0]
+        fig.add_trace(gp_trace)
 
-    if "Gaussian Process" in selected_emulators:
-        fig.add_trace(px.scatter_mapbox(
+        # st.subheader("Sea Level Rise Projection with Uncertainty")
+        # st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
+        # line_plot(gp_df, year)
+
+        st.subheader(f"GP Projected Sea Level Rise in {year}")
+        box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
+        st.pyplot(box)
+
+    if "Random Forest" == selected_emulator:
+        path = f"data/RF_245/RF_Carbon_{co2}_Preds.csv"
+        rf_df = pd.read_csv(path)
+        rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
+        rf_trace = px.scatter_mapbox(
             df_coastal,
             lat="Latitude",
             lon="Longitude",
-            color_discrete_sequence=[emulator_colors["Gaussian Process"]],  # Use predefined color
-            hover_data={"Latitude": False, "Longitude": False, "GP Sea Level Rise (mm)": True}
-        ).data[0])
+            color_discrete_sequence=[emulator_colors["Random Forest"]],
+            hover_data={
+                "Latitude": False,
+                "Longitude": False,
+                "RF Sea Level Rise (mm)": np.round(
+                    [rf_quartiles["50q_dH_dT"]] * len(df_coastal), 2
+                ),
+            },
+        ).data[0]
+        fig.add_trace(rf_trace)
 
-    # Display the map in Streamlit
+        # st.subheader("Sea Level Rise Projection with Uncertainty")
+        # st.write(
+        #     "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
+        # )
+        # line_plot(rf_df, year)
+
+        st.subheader(f"RF Projected Sea Level Rise in {year}")
+        box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
+        st.pyplot(box)
+
+    if "CNN-LTSM" == selected_emulator:
+        path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
+        cnn_df = pd.read_csv(path)
+        cnn_quartiles = cnn_df[cnn_df["year"] == year].iloc[0, 1:]
+        cnn_trace = px.scatter_mapbox(
+            df_coastal,
+            lat="Latitude",
+            lon="Longitude",
+            color_discrete_sequence=[emulator_colors["CNN-LTSM"]],
+            hover_data={
+                "Latitude": False,
+                "Longitude": False,
+                "RF Sea Level Rise (mm)": np.round(
+                    [cnn_quartiles["50q_dH_dT"]] * len(df_coastal), 2
+                ),
+            },
+        ).data[0]
+        fig.add_trace(cnn_trace)
+
+        st.subheader("Sea Level Rise Projection with Uncertainty")
+        st.write(
+            "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
+        )
+        # line_plot(cnn_df, year)
+
+        st.subheader(f"CNN Projected Sea Level Rise in {year}")
+        box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
+        st.pyplot(box)
+
+    st.write("For your convenience we have determined an iPhone 📱 is 146.6mm. Now you can better visualize the sea level rise.")
+
+    st.write("The figure above shows you a box plot of our sea level rise. The median (50th percentile) is a reasonable estimate of sea level rise.")
+
+    st.write("😱 \"Wow, that's scary!\" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.")
+
+    st.subheader("Projected Sea Level Rise for Florida in 2100")
     st.plotly_chart(fig)
-
-
-# # Emulators to download
-# EMULATORS = {
-#     "ClimateBench_cnn_outputs_ssp245_predict_tas.nc": {
-#         "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/ClimateBench_cnn_outputs_ssp245_predict_tas.nc",
-#         "description": "CNN-LTSM Emulator",
-#         "extract": False,  # NetCDF files should NOT be extracted
-#     },
-#     "ClimateBench_gp_outputs_ssp245_predict_tas.tar.gz": {
-#         "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/ClimateBench_gp_outputs_ssp245_predict_tas.tar.gz",
-#         "description": "Gaussian Process Emulator",
-#         "extract": True,
-#     },
-#     "tuned_rf_outputs_ssp245_predict_tas.tar.gz": {
-#         "url": "https://raw.githubusercontent.com/zoeludena/SeeRise-Florida/main/data/tuned_rf_outputs_ssp245_predict_tas.tar.gz",
-#         "description": "Random Forest Emulator",
-#         "extract": True,
-#     },
-# }
+    st.write("Above, you will find another interactive figure. It looks at the elevation of the coastline of Florida. From there you can see how far the sea level will rise.")
+    # st.snow()
 
 if __name__ == "__main__":
     main()
