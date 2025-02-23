@@ -7,6 +7,7 @@ import gdown
 import geopandas as gpd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+from sanibel import plot_sanibel_dem
 
 max_co2 = 9500
 
@@ -160,7 +161,7 @@ def main():
 
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
-    st.write("This application predicts the sea level rise under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
+    st.write("This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
 
     with st.expander("🗣️ Click to learn about SSP 245"):
         st.write("SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100.")
@@ -186,7 +187,7 @@ def main():
             st.write("CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models.")  
 
 
-    year = 2025
+    year = 2100
 
     # Google Drive File IDs for each shapefile component
     file_ids = {
@@ -260,6 +261,9 @@ def main():
         box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
         st.pyplot(box)
 
+        sea_level_rise = gp_quartiles['50q_dH_dT'] / 1000  # Convert mm to meters
+
+
     if "Random Forest" == selected_emulator:
         path = f"data/RF_245/RF_Carbon_{co2}_Preds.csv"
         rf_df = pd.read_csv(path)
@@ -288,6 +292,8 @@ def main():
         st.subheader(f"RF Projected Sea Level Rise")
         box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
         st.pyplot(box)
+
+        sea_level_rise = rf_quartiles['50q_dH_dT'] / 1000  # Convert mm to meters
 
     if "CNN-LTSM" == selected_emulator:
         path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
@@ -318,15 +324,26 @@ def main():
         box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
         st.pyplot(box)
 
+        sea_level_rise = cnn_quartiles['50q_dH_dT'] / 1000  # Convert mm to meters
+
     st.write("For your convenience we have determined an iPhone 📱 is 146.6mm. Now you can better visualize the sea level rise.")
 
     st.write("The figure above shows you a box plot of our sea level rise. The median (50th percentile) is a reasonable estimate of sea level rise.")
 
     st.write("😱 \"Wow, that's scary!\" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.")
 
-    st.subheader("Projected Sea Level Rise for Florida")
-    st.plotly_chart(fig)
-    st.write("Above, you will find another interactive figure. It looks at the elevation of the coastline of Florida. From there you can see how far the sea level will rise.")
+    st.subheader("Sanibel Island Sea Level Rise in 2100")
+
+    if selected_emulator == "Gaussian Process":
+        plot_sanibel_dem(sea_level_rise)
+    if "CNN-LTSM" == selected_emulator:
+        plot_sanibel_dem(sea_level_rise)
+    if "Random Forest" == selected_emulator:
+        plot_sanibel_dem(sea_level_rise)
+
+    # st.subheader("Projected Sea Level Rise for Florida")
+    # st.plotly_chart(fig)
+    # st.write("Above, you will find another interactive figure. It looks at the elevation of the coastline of Florida. From there you can see how far the sea level will rise.")
     # st.snow()
 
 if __name__ == "__main__":
