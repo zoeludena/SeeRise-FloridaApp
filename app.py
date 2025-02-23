@@ -66,6 +66,10 @@ def plot_horizontal_boxplot(quartiles, emulator):
                whiskerprops=dict(color=emulator_colors[emulator], linewidth=1),
                capprops=dict(color=emulator_colors[emulator], linewidth=1),
                flierprops=dict(marker='o', color=emulator_colors[emulator], alpha=0.5))
+    
+    # ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
 
     # Convert mm to iPhone thickness equivalents
     iphones = {name: quartiles[name] / 146.6 for name in quartiles.index}
