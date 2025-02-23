@@ -180,5 +180,9 @@ def main():
     if "Random Forest" == selected_emulator:
         plot_sanibel_dem(sea_level_rise)
 
+    st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage.")
+    st.write("Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.6 meters of sea level rise - this varies a little based on the emulator selected.")
+    st.write("This vacation spot could possibly be submerged!")
+
 if __name__ == "__main__":
     main()
