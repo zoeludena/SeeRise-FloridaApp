@@ -14,7 +14,7 @@ max_co2 = 9500
 def emissions_ui():
     st.sidebar.markdown("# Emissions 🌫️")
     # Change this to start at 0 and end at 9500
-    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 3340, max_co2, 4340, 10)
+    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 0, max_co2, 3340, 10)
     return co2
 
 
@@ -160,7 +160,7 @@ def main():
 
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
-    st.write("This application predicts the sea level rise in the year 2100 under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
+    st.write("This application predicts the sea level rise under the assumption of SSP 245's values in the present year (2025). The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
 
     with st.expander("🗣️ Click to learn about SSP 245"):
         st.write("SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100.")
@@ -186,7 +186,7 @@ def main():
             st.write("CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models.")  
 
 
-    year = 2100
+    year = 2025
 
     # Google Drive File IDs for each shapefile component
     file_ids = {
@@ -256,7 +256,7 @@ def main():
         # st.write("Change the Year or CO2 slider to reveal the median sea level rise (mm).")
         # line_plot(gp_df, year)
 
-        st.subheader(f"GP Projected Sea Level Rise in {year}")
+        st.subheader(f"GP Projected Sea Level Rise")
         box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
         st.pyplot(box)
 
@@ -285,7 +285,7 @@ def main():
         # )
         # line_plot(rf_df, year)
 
-        st.subheader(f"RF Projected Sea Level Rise in {year}")
+        st.subheader(f"RF Projected Sea Level Rise")
         box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
         st.pyplot(box)
 
@@ -308,13 +308,13 @@ def main():
         ).data[0]
         fig.add_trace(cnn_trace)
 
-        st.subheader("Sea Level Rise Projection with Uncertainty")
-        st.write(
-            "Change the Year or CO2 slider to reveal the median sea level rise (mm)."
-        )
+        # st.subheader("Sea Level Rise Projection with Uncertainty")
+        # st.write(
+        #     "Change the CO2 slider to reveal the median sea level rise (mm)."
+        # )
         # line_plot(cnn_df, year)
 
-        st.subheader(f"CNN Projected Sea Level Rise in {year}")
+        st.subheader(f"CNN Projected Sea Level Rise")
         box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
         st.pyplot(box)
 
@@ -324,7 +324,7 @@ def main():
 
     st.write("😱 \"Wow, that's scary!\" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.")
 
-    st.subheader("Projected Sea Level Rise for Florida in 2100")
+    st.subheader("Projected Sea Level Rise for Florida")
     st.plotly_chart(fig)
     st.write("Above, you will find another interactive figure. It looks at the elevation of the coastline of Florida. From there you can see how far the sea level will rise.")
     # st.snow()
