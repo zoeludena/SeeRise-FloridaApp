@@ -16,3 +16,4 @@ esem
 gpflow
 geopandas
 dask
+rasterio
