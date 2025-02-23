@@ -112,7 +112,7 @@ def main():
         st.write("RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100).")
         st.write("This allows the temperature to rise a little more that what the Paris Agreement hopes for.")
 
-    st.write("You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature in 2100 🌡️. From there we predicted the sea level rise using linear regression.")
+    st.write("You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2100 to predict the temperature 🌡️. From there we predicted the sea level rise using linear regression.")
 
     with st.expander("Learn about your emulator:"):
         if selected_emulator == "Pattern Scaling":
