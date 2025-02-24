@@ -281,6 +281,8 @@ def main():
     # if "Random Forest" == selected_emulator:
     #     plot_dem(sea_level_rise, "Random Forest", "Hobe Sound")
 
+    st.subheader("Fort Myers Beach Sea Level Rise in 2100")
+
     if selected_emulator == "Pattern Scaling":
         plot_dem(sea_level_rise,"Pattern Scaling", "Fort Myers Beach")
     if selected_emulator == "Gaussian Process":
@@ -289,6 +291,10 @@ def main():
         plot_dem(sea_level_rise, "CNN-LTSM", "Fort Myers Beach")
     if "Random Forest" == selected_emulator:
         plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
+
+    st.write("Fort Myers Beach is part of the Cape Coral-Fort Myers, Florida Metropolitan Statistical Area. There are many fun celebrations that take place here.")
+
+    st.write("Fort Myers Beach is also a popular tourist destination known for it's white sand beaches, calm waters, and stunning sunsets.")
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Titusville")
@@ -308,6 +314,8 @@ def main():
     # if "Random Forest" == selected_emulator:
     #     plot_dem(sea_level_rise, "Random Forest", "Cape Canaveral")
 
+    st.subheader("Courtenay Sea Level Rise in 2100")
+
     if selected_emulator == "Pattern Scaling":
         plot_dem(sea_level_rise,"Pattern Scaling", "Courtenay")
     if selected_emulator == "Gaussian Process":
@@ -316,6 +324,8 @@ def main():
         plot_dem(sea_level_rise, "CNN-LTSM", "Courtenay")
     if "Random Forest" == selected_emulator:
         plot_dem(sea_level_rise, "Random Forest", "Courtenay")
+
+    st.write("Courtenay is within a few miles from the Kennedy Space Center and Merrit Island National Wildlife Refuge.")
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")
