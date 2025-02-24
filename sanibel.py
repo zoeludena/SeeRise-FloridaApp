@@ -41,7 +41,7 @@ def plot_sanibel_dem(sea_level):
 
         # Overlay the flooded areas in dark blue using a contour plot
         if np.any(flooded_mask):  # Ensure we have flooded areas before plotting
-            ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["darkblue"], alpha=0.6)
+            ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["cornflowerblue"], alpha=0.6)
 
         ax.set_title(f"Sanibel Island DEM with {sea_level:.2f}m Sea Level Rise")
         ax.set_xlabel("Longitude")
