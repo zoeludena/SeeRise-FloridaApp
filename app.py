@@ -179,6 +179,16 @@ def main():
 
     year = 2100
 
+    if "Pattern Scaling" == selected_emulator:
+        path = f"data/PS_Carbon/PS_Carbon_{co2}_Preds.csv"
+        ps_df = pd.read_csv(path)
+        ps_quartiles = ps_df[ps_df["year"] == year].iloc[0, 1:]
+        st.subheader(f"PS Projected Sea Level Rise")
+        box = plot_horizontal_boxplot(ps_quartiles, "Pattern Scaling")
+        st.pyplot(box)
+
+        sea_level_rise = ps_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
+
     if "Gaussian Process" == selected_emulator:
         path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
         gp_df = pd.read_csv(path)
@@ -223,6 +233,8 @@ def main():
 
     st.subheader("Sanibel Island Sea Level Rise in 2100")
 
+    if selected_emulator == "Pattern Scaling":
+        plot_sanibel_dem(sea_level_rise)
     if selected_emulator == "Gaussian Process":
         plot_sanibel_dem(sea_level_rise)
     if "CNN-LTSM" == selected_emulator:
@@ -238,6 +250,8 @@ def main():
     )
     st.write("This vacation spot could possibly be submerged!")
 
+    if selected_emulator == "Pattern Scaling":
+        plot_tampa_dem(sea_level_rise)
     if selected_emulator == "Gaussian Process":
         plot_tampa_dem(sea_level_rise)
     if "CNN-LTSM" == selected_emulator:
@@ -245,6 +259,8 @@ def main():
     if "Random Forest" == selected_emulator:
         plot_tampa_dem(sea_level_rise)
 
+    if selected_emulator == "Pattern Scaling":
+        plot_miami_dem(sea_level_rise)
     if selected_emulator == "Gaussian Process":
         plot_miami_dem(sea_level_rise)
     if "CNN-LTSM" == selected_emulator:
