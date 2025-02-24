@@ -7,9 +7,7 @@ import gdown
 import geopandas as gpd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
-from sanibel import plot_sanibel_dem
-from tampa import plot_tampa_dem
-from miami import plot_miami_dem
+from plot_dem import plot_dem
 
 max_co2 = 9500
 
@@ -171,7 +169,7 @@ def main():
             )
         else:
             st.write(
-                "A CNN-LSTM model combines Convolutional Neural Networks (CNNs) and Long Short-Term Memory (LSTM) networks to capture spatial and temporal patterns in data. CNNs extract spatial features from input data, while LSTMs process sequential dependencies, making this architecture ideal for spatiotemporal modeling. By leveraging both components, CNN-LSTMs can learn complex relationships in time-series data while preserving spatial structures."
+                "A CNN-LSTM model combines Convolutional Neural Networks (CNNs) and Long Short-Term Memory (LSTM) networks to capture spatial and temporal patterns in data. CNNs extract spatial features from input data, while LSTMs process sequential dependencies. By leveraging both components, CNN-LSTMs can learn complex relationships in time-series data while preserving spatial structures."
             )
             st.write(
                 "CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models."
@@ -235,39 +233,44 @@ def main():
     st.subheader("Sanibel Island Sea Level Rise in 2100")
 
     if selected_emulator == "Pattern Scaling":
-        plot_sanibel_dem(sea_level_rise, "Pattern Scaling")
+        plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island")
     if selected_emulator == "Gaussian Process":
-        plot_sanibel_dem(sea_level_rise, "Gaussian Process")
+        plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island")
     if "CNN-LTSM" == selected_emulator:
-        plot_sanibel_dem(sea_level_rise, "CNN-LTSM")
+        plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island")
     if "Random Forest" == selected_emulator:
-        plot_sanibel_dem(sea_level_rise, "Random Forest")
+        plot_dem(sea_level_rise, "Random Forest", "Sanibel Island")
+
+    with st.expander("What is DEM? 🗺️"):
+        st.write("DEM stands for digital elevation model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage.")
+        st.write("We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise.")
+        st.write("We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data.")
 
     st.write(
-        "Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage."
+        "Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
     )
     st.write(
-        "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.6 meters of sea level rise - this varies a little based on the emulator selected."
+        "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
     )
-    st.write("This vacation spot could possibly be submerged!")
+    st.write("This vacation spot could possibly be submerged! 🤿")
 
     if selected_emulator == "Pattern Scaling":
-        plot_tampa_dem(sea_level_rise)
+        plot_dem(sea_level_rise, "Pattern Scaling", "Tampa")
     if selected_emulator == "Gaussian Process":
-        plot_tampa_dem(sea_level_rise)
+        plot_dem(sea_level_rise, "Gaussian Process", "Tampa")
     if "CNN-LTSM" == selected_emulator:
-        plot_tampa_dem(sea_level_rise)
+        plot_dem(sea_level_rise, "CNN-LTSM", "Tampa")
     if "Random Forest" == selected_emulator:
-        plot_tampa_dem(sea_level_rise)
+        plot_dem(sea_level_rise, "Random Forest", "Tampa")
 
     if selected_emulator == "Pattern Scaling":
-        plot_miami_dem(sea_level_rise)
+        plot_dem(sea_level_rise,"Pattern Scaling", "Miami")
     if selected_emulator == "Gaussian Process":
-        plot_miami_dem(sea_level_rise)
+        plot_dem(sea_level_rise,"Gaussian Process", "Miami")
     if "CNN-LTSM" == selected_emulator:
-        plot_miami_dem(sea_level_rise)
+        plot_dem(sea_level_rise, "CNN-LTSM", "Miami")
     if "Random Forest" == selected_emulator:
-        plot_miami_dem(sea_level_rise)
+        plot_dem(sea_level_rise, "Random Forest", "Miami")
 
 
 if __name__ == "__main__":
