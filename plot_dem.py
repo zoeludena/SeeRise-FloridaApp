@@ -5,15 +5,20 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import os
 
-# Get absolute path to Sanibel.dem
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get current directory
-DEM_PATH = os.path.join(BASE_DIR, "Sanibel", "Sanibel.dem")  # Ensure correct casing
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-def plot_sanibel_dem(sea_level, emulator):
+def plot_dem(sea_level, emulator, dem):
     """
-    Plots the DEM of Sanibel Island with an overlay showing projected flooding
+    Plots the DEM of a location with an overlay showing projected flooding
     for a given sea level rise scenario. Flooded areas are shown in dark blue.
     """
+    if dem == "Sanibel Island":
+        DEM_PATH = os.path.join(BASE_DIR, "Sanibel", "Sanibel.dem")
+    elif dem == "Miami":
+        DEM_PATH = os.path.join(BASE_DIR, "Miami", "Miami.dem")
+    elif dem == "Tampa":
+        DEM_PATH = os.path.join(BASE_DIR, "Tampa", "Tampa.dem")
+    
     with rasterio.open(DEM_PATH) as src:
         dem_array = src.read(1)  # Read first band
         profile = src.profile
@@ -43,7 +48,7 @@ def plot_sanibel_dem(sea_level, emulator):
         if np.any(flooded_mask):  # Ensure we have flooded areas before plotting
             ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["cornflowerblue"], alpha=0.6)
 
-        ax.set_title(f"{emulator} Sanibel Island DEM with {sea_level:.2f}m Sea Level Rise")
+        ax.set_title(f"{emulator} {dem} DEM with {sea_level:.2f}m Sea Level Rise")
         ax.set_xlabel("Longitude")
         ax.set_ylabel("Latitude")
 
