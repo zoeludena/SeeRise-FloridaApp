@@ -190,7 +190,8 @@ def main():
         sea_level_rise = ps_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     if "Gaussian Process" == selected_emulator:
-        path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
+        # path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
+        path = f"data/GP_cumsum/GP_Carbon_{co2}_Preds.csv"
         gp_df = pd.read_csv(path)
         gp_quartiles = gp_df[gp_df["year"] == year].iloc[0, 1:]
         st.subheader(f"GP Projected Sea Level Rise")
@@ -200,7 +201,7 @@ def main():
         sea_level_rise = gp_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     if "Random Forest" == selected_emulator:
-        path = f"data/RF_no_cumsum/RF_Carbon_{co2}_Preds_cumsum.csv"
+        path = f"data/RF_cumsum/RF_Carbon_{co2}_Preds.csv"
         rf_df = pd.read_csv(path)
         rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
         st.subheader(f"RF Projected Sea Level Rise")
