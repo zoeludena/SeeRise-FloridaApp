@@ -290,6 +290,15 @@ def main():
     if "Random Forest" == selected_emulator:
         plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
 
+    # if selected_emulator == "Pattern Scaling":
+    #     plot_dem(sea_level_rise,"Pattern Scaling", "Titusville")
+    # if selected_emulator == "Gaussian Process":
+    #     plot_dem(sea_level_rise,"Gaussian Process", "Titusville")
+    # if "CNN-LTSM" == selected_emulator:
+    #     plot_dem(sea_level_rise, "CNN-LTSM", "Titusville")
+    # if "Random Forest" == selected_emulator:
+    #     plot_dem(sea_level_rise, "Random Forest", "Titusville")
+
 
 if __name__ == "__main__":
     main()

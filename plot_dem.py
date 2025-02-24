@@ -22,6 +22,8 @@ def plot_dem(sea_level, emulator, dem):
         DEM_PATH = os.path.join(BASE_DIR, "Hobe_Sound", "Hobe.dem")
     elif dem == "Fort Myers Beach":
         DEM_PATH = os.path.join(BASE_DIR, "Fort_Myers", "Fort_Myers.dem")
+    elif dem == "Titusville":
+        DEM_PATH = os.path.join(BASE_DIR, "Titusville", "Titusville.dem")
     
     with rasterio.open(DEM_PATH) as src:
         dem_array = src.read(1)  # Read first band
