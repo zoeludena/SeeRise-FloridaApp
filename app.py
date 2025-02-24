@@ -190,7 +190,7 @@ def main():
         sea_level_rise = gp_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     if "Random Forest" == selected_emulator:
-        path = f"data/RF_245/RF_Carbon_{co2}_Preds_no_cumsum.csv"
+        path = f"data/RF_no_cumsum/RF_Carbon_{co2}_Preds_no_cumsum.csv"
         rf_df = pd.read_csv(path)
         rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
         st.subheader(f"RF Projected Sea Level Rise")
