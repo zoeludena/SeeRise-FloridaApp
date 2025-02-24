@@ -182,7 +182,7 @@ def main():
     if "Pattern Scaling" == selected_emulator:
         path = f"data/PS_Carbon/PS_Carbon_{co2}_Preds.csv"
         ps_df = pd.read_csv(path)
-        ps_quartiles = ps_df[gp_df["year"] == year].iloc[0, 1:]
+        ps_quartiles = ps_df[ps_df["year"] == year].iloc[0, 1:]
         st.subheader(f"PS Projected Sea Level Rise")
         box = plot_horizontal_boxplot(ps_quartiles, "Pattern Scaling")
         st.pyplot(box)
