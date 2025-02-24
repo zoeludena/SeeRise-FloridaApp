@@ -9,7 +9,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get current directory
 DEM_PATH = os.path.join(BASE_DIR, "Sanibel", "Sanibel.dem")  # Ensure correct casing
 
-def plot_sanibel_dem(sea_level):
+def plot_sanibel_dem(sea_level, emulator):
     """
     Plots the DEM of Sanibel Island with an overlay showing projected flooding
     for a given sea level rise scenario. Flooded areas are shown in dark blue.
@@ -43,7 +43,7 @@ def plot_sanibel_dem(sea_level):
         if np.any(flooded_mask):  # Ensure we have flooded areas before plotting
             ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["cornflowerblue"], alpha=0.6)
 
-        ax.set_title(f"Sanibel Island DEM with {sea_level:.2f}m Sea Level Rise")
+        ax.set_title(f"{emulator} Sanibel Island DEM with {sea_level:.2f}m Sea Level Rise")
         ax.set_xlabel("Longitude")
         ax.set_ylabel("Latitude")
 

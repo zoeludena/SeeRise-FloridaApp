@@ -235,13 +235,13 @@ def main():
     st.subheader("Sanibel Island Sea Level Rise in 2100")
 
     if selected_emulator == "Pattern Scaling":
-        plot_sanibel_dem(sea_level_rise)
+        plot_sanibel_dem(sea_level_rise, "Pattern Scaling")
     if selected_emulator == "Gaussian Process":
-        plot_sanibel_dem(sea_level_rise)
+        plot_sanibel_dem(sea_level_rise, "Gaussian Process")
     if "CNN-LTSM" == selected_emulator:
-        plot_sanibel_dem(sea_level_rise)
+        plot_sanibel_dem(sea_level_rise, "CNN-LTSM")
     if "Random Forest" == selected_emulator:
-        plot_sanibel_dem(sea_level_rise)
+        plot_sanibel_dem(sea_level_rise, "Random Forest")
 
     st.write(
         "Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage."
