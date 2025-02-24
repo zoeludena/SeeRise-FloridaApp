@@ -191,7 +191,7 @@ def main():
 
     if "Gaussian Process" == selected_emulator:
         # path = f"data/GP_245/GP_Carbon_{co2}_Preds.csv"
-        path = f"data/GP_cumsum/GP_Carbon_{co2}_Preds.csv"
+        path = f"data/GP_245_Linear/GP_Carbon_{co2}_Preds.csv"
         gp_df = pd.read_csv(path)
         gp_quartiles = gp_df[gp_df["year"] == year].iloc[0, 1:]
         st.subheader(f"GP Projected Sea Level Rise")
@@ -211,7 +211,7 @@ def main():
         sea_level_rise = rf_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     if "CNN-LTSM" == selected_emulator:
-        path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
+        path = f"data/CNN_245_Linear/CNN_Carbon_{co2}_Preds.csv"
         cnn_df = pd.read_csv(path)
         cnn_quartiles = cnn_df[cnn_df["year"] == year].iloc[0, 1:]
         st.subheader(f"CNN Projected Sea Level Rise")
