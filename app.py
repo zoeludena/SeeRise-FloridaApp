@@ -254,32 +254,41 @@ def main():
     )
     st.write("This vacation spot could possibly be submerged! 🤿")
 
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise, "Pattern Scaling", "Tampa")
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise, "Gaussian Process", "Tampa")
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Tampa")
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Tampa")
+    # if selected_emulator == "Pattern Scaling":
+    #     plot_dem(sea_level_rise, "Pattern Scaling", "Tampa")
+    # if selected_emulator == "Gaussian Process":
+    #     plot_dem(sea_level_rise, "Gaussian Process", "Tampa")
+    # if "CNN-LTSM" == selected_emulator:
+    #     plot_dem(sea_level_rise, "CNN-LTSM", "Tampa")
+    # if "Random Forest" == selected_emulator:
+    #     plot_dem(sea_level_rise, "Random Forest", "Tampa")
+
+    # if selected_emulator == "Pattern Scaling":
+    #     plot_dem(sea_level_rise,"Pattern Scaling", "Miami")
+    # if selected_emulator == "Gaussian Process":
+    #     plot_dem(sea_level_rise,"Gaussian Process", "Miami")
+    # if "CNN-LTSM" == selected_emulator:
+    #     plot_dem(sea_level_rise, "CNN-LTSM", "Miami")
+    # if "Random Forest" == selected_emulator:
+    #     plot_dem(sea_level_rise, "Random Forest", "Miami")
+
+    # if selected_emulator == "Pattern Scaling":
+    #     plot_dem(sea_level_rise,"Pattern Scaling", "Hobe Sound")
+    # if selected_emulator == "Gaussian Process":
+    #     plot_dem(sea_level_rise,"Gaussian Process", "Hobe Sound")
+    # if "CNN-LTSM" == selected_emulator:
+    #     plot_dem(sea_level_rise, "CNN-LTSM", "Hobe Sound")
+    # if "Random Forest" == selected_emulator:
+    #     plot_dem(sea_level_rise, "Random Forest", "Hobe Sound")
 
     if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise,"Pattern Scaling", "Miami")
+        plot_dem(sea_level_rise,"Pattern Scaling", "Fort Myers Beach")
     if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise,"Gaussian Process", "Miami")
+        plot_dem(sea_level_rise,"Gaussian Process", "Fort Myers Beach")
     if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Miami")
+        plot_dem(sea_level_rise, "CNN-LTSM", "Fort Myers Beach")
     if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Miami")
-
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise,"Pattern Scaling", "Hobe Sound")
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise,"Gaussian Process", "Hobe Sound")
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Hobe Sound")
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Hobe Sound")
+        plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
 
 
 if __name__ == "__main__":
