@@ -23,19 +23,19 @@ def emissions_ui():
 
 emulator_colors = {
     "Pattern Scaling": "#d55e00",
-    "CNN-LTSM": "#cc79a7", 
-    "Random Forest": "#009e73", 
-    "Gaussian Process": "#0072b2", 
+    "CNN-LTSM": "#cc79a7",
+    "Random Forest": "#009e73",
+    "Gaussian Process": "#0072b2",
 }
+
 
 def emulator_ui():
     st.sidebar.markdown("# Select Emulator 👇")
 
-
     selected_emulator = st.sidebar.radio(
         "Choose an emulator:",
         list(emulator_colors.keys()),
-        index=3  # Default selection
+        index=3,  # Default selection
     )
 
     # Show selected emulator in a color-coded box
@@ -55,20 +55,24 @@ def plot_horizontal_boxplot(quartiles, emulator):
     fig, ax = plt.subplots(figsize=(8, 2))  # Wide and short for readability
 
     percentiles = [
-        quartiles['5q_dH_dT'], 
-        quartiles['17q_dH_dT'], 
-        quartiles['50q_dH_dT'], 
-        quartiles['83q_dH_dT'], 
-        quartiles['95q_dH_dT']
+        quartiles["5q_dH_dT"],
+        quartiles["17q_dH_dT"],
+        quartiles["50q_dH_dT"],
+        quartiles["83q_dH_dT"],
+        quartiles["95q_dH_dT"],
     ]
 
-    ax.boxplot(percentiles, vert=False, patch_artist=True, 
-               boxprops=dict(facecolor='lightgrey', color=emulator_colors[emulator]),
-               medianprops=dict(color=emulator_colors[emulator], linewidth=2),
-               whiskerprops=dict(color=emulator_colors[emulator], linewidth=1),
-               capprops=dict(color=emulator_colors[emulator], linewidth=1),
-               flierprops=dict(marker='o', color=emulator_colors[emulator], alpha=0.5))
-    
+    ax.boxplot(
+        percentiles,
+        vert=False,
+        patch_artist=True,
+        boxprops=dict(facecolor="lightgrey", color=emulator_colors[emulator]),
+        medianprops=dict(color=emulator_colors[emulator], linewidth=2),
+        whiskerprops=dict(color=emulator_colors[emulator], linewidth=1),
+        capprops=dict(color=emulator_colors[emulator], linewidth=1),
+        flierprops=dict(marker="o", color=emulator_colors[emulator], alpha=0.5),
+    )
+
     # ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.spines["left"].set_visible(False)
@@ -80,15 +84,27 @@ def plot_horizontal_boxplot(quartiles, emulator):
     text_y_above = 1.1  # Above the box plot for 5th, 50th, 95th
     text_y_below = 0.7  # Below the box plot for 17th, 83rd
 
-    for name in ['5q_dH_dT', '50q_dH_dT', '95q_dH_dT']:
+    for name in ["5q_dH_dT", "50q_dH_dT", "95q_dH_dT"]:
         value = quartiles[name]
-        ax.text(value, text_y_above, f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)", 
-                horizontalalignment='center', color=emulator_colors[emulator], fontweight='bold')
+        ax.text(
+            value,
+            text_y_above,
+            f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)",
+            horizontalalignment="center",
+            color=emulator_colors[emulator],
+            fontweight="bold",
+        )
 
-    for name in ['17q_dH_dT', '83q_dH_dT']:
+    for name in ["17q_dH_dT", "83q_dH_dT"]:
         value = quartiles[name]
-        ax.text(value, text_y_below, f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)", 
-                horizontalalignment='center', color=emulator_colors[emulator], fontweight='bold')
+        ax.text(
+            value,
+            text_y_below,
+            f"{name.split('q')[0]}: {value:.1f} mm\n(~{iphones[name]:.1f} iPhones)",
+            horizontalalignment="center",
+            color=emulator_colors[emulator],
+            fontweight="bold",
+        )
 
     ax.set_xlabel("Sea Level Rise (mm)")
     ax.set_yticks([])
@@ -108,31 +124,58 @@ def main():
 
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
-    st.write("This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons).")
+    st.write(
+        "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons)."
+    )
 
     with st.expander("🗣️ Click to learn about SSP 245"):
-        st.write("SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100.")
+        st.write(
+            "SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100."
+        )
         st.write("Let's break down what that means...")
-        st.write("Shared Socioeconomic Pathway 2 represents moderate global trends in population growth, economic development, and technology. So it is neither extreme sustainability nor extreme fossil-fuel reliance. There would be continued economic and population growth, but with persistent inequalities. There is also a mix of renewable and fossil-fuel-based energy sources.")
-        st.write("We believe this is the most probable future. It's common name is the Middle of the Road Scenario.")
-        st.write("RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100).")
-        st.write("This allows the temperature to rise a little more that what the Paris Agreement hopes for.")
+        st.write(
+            "Shared Socioeconomic Pathway 2 represents moderate global trends in population growth, economic development, and technology. So it is neither extreme sustainability nor extreme fossil-fuel reliance. There would be continued economic and population growth, but with persistent inequalities. There is also a mix of renewable and fossil-fuel-based energy sources."
+        )
+        st.write(
+            "We believe this is the most probable future. It's common name is the Middle of the Road Scenario."
+        )
+        st.write(
+            "RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100)."
+        )
+        st.write(
+            "This allows the temperature to rise a little more that what the Paris Agreement hopes for."
+        )
 
-    st.write("You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2100 to predict the temperature 🌡️. From there we predicted the sea level rise using linear regression.")
+    st.write(
+        "You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2100 to predict the temperature 🌡️. From there we predicted the sea level rise using linear regression."
+    )
 
     with st.expander("Learn about your emulator:"):
         if selected_emulator == "Pattern Scaling":
-            st.write('The pattern scaling model is the simplest emulator at our disposal. The model consists of many linear regression models trained on global mean temperature in different emission scenarios. These models regress desired variables (precipitation, diurnal temperature range, etc.) on global mean temperature which is the \"scaling\" element of the model. Once trained, the model takes a vector of global mean temperatures from a particular emission scenario, and predicts the desired variables using the inputs. This model is powerful yet simple because it can predict local values of particular variables using only globally averaged inputs.')
+            st.write(
+                'The pattern scaling model is the simplest emulator at our disposal. The model consists of many linear regression models trained on global mean temperature in different emission scenarios. These models regress desired variables (precipitation, diurnal temperature range, etc.) on global mean temperature which is the "scaling" element of the model. Once trained, the model takes a vector of global mean temperatures from a particular emission scenario, and predicts the desired variables using the inputs. This model is powerful yet simple because it can predict local values of particular variables using only globally averaged inputs.'
+            )
         elif selected_emulator == "Gaussian Process":
-            st.write("A Gaussian Process (GP) model, used in the Climate Bench paper, is a probabilistic framework ideal for regression and classification tasks. GPs model functions by defining a prior characterized by a mean function, m(x), representing the expected value at x, and a covariance function, k(x,x'), which measures similarity between inputs x and x'. Using Bayesian inference, GPs update this prior with training data to produce a posterior distribution. For new inputs, predictions are made as a distribution with a mean (most likely value) and variance (uncertainty estimate).")
-            st.write("GP models are well-suited for climate prediction. Climate systems are governed by complex, smooth, and often nonlinear relationships, which GPs can model through appropriately chosen kernels. Moreover, their ability to provide uncertainty estimates is invaluable when working with limited or noisy climate data, as these estimates can highlight regions where the model is less confident in its predictions. Finally, the interpretability of GP models aligns well with scientific practices, allowing researchers to explore the relationships captured by the covariance function and gain insights into the modeled climate dynamics.")
+            st.write(
+                "A Gaussian Process (GP) model, used in the Climate Bench paper, is a probabilistic framework ideal for regression and classification tasks. GPs model functions by defining a prior characterized by a mean function, m(x), representing the expected value at x, and a covariance function, k(x,x'), which measures similarity between inputs x and x'. Using Bayesian inference, GPs update this prior with training data to produce a posterior distribution. For new inputs, predictions are made as a distribution with a mean (most likely value) and variance (uncertainty estimate)."
+            )
+            st.write(
+                "GP models are well-suited for climate prediction. Climate systems are governed by complex, smooth, and often nonlinear relationships, which GPs can model through appropriately chosen kernels. Moreover, their ability to provide uncertainty estimates is invaluable when working with limited or noisy climate data, as these estimates can highlight regions where the model is less confident in its predictions. Finally, the interpretability of GP models aligns well with scientific practices, allowing researchers to explore the relationships captured by the covariance function and gain insights into the modeled climate dynamics."
+            )
         elif selected_emulator == "Random Forest":
-            st.write("Random Forest is an ensemble method that aggregates the predictions of multiple decision trees to enhance predictive performance. Decision trees, as the base models, are particularly effective at capturing non-linear relationships and interactions between variables but are prone to overfitting. Random Forest addresses this limitation by averaging the predictions of all individual trees, which reduces variance and increases robustness. This makes it well-suited for climate model emulation, where separate models are often developed for multiple target variables.")
-            st.write("One key advantage of Random Forest in climate model emulation is its interpretability, which aids in informing decision-making. While a common drawback of Random Forest is its inability to extrapolate beyond the range of training data, this is not a significant concern in this context. Relevant predictions in climate modeling typically lie within the range defined by historical climate data and plausible scenarios, such as the low-emissions SSP126 and high-emissions SSP585 pathways. This makes Random Forest an effective and practical choice for emulating climate models.")
+            st.write(
+                "Random Forest is an ensemble method that aggregates the predictions of multiple decision trees to enhance predictive performance. Decision trees, as the base models, are particularly effective at capturing non-linear relationships and interactions between variables but are prone to overfitting. Random Forest addresses this limitation by averaging the predictions of all individual trees, which reduces variance and increases robustness. This makes it well-suited for climate model emulation, where separate models are often developed for multiple target variables."
+            )
+            st.write(
+                "One key advantage of Random Forest in climate model emulation is its interpretability, which aids in informing decision-making. While a common drawback of Random Forest is its inability to extrapolate beyond the range of training data, this is not a significant concern in this context. Relevant predictions in climate modeling typically lie within the range defined by historical climate data and plausible scenarios, such as the low-emissions SSP126 and high-emissions SSP585 pathways. This makes Random Forest an effective and practical choice for emulating climate models."
+            )
         else:
-            st.write("A CNN-LSTM model combines Convolutional Neural Networks (CNNs) and Long Short-Term Memory (LSTM) networks to capture spatial and temporal patterns in data. CNNs extract spatial features from input data, while LSTMs process sequential dependencies, making this architecture ideal for spatiotemporal modeling. By leveraging both components, CNN-LSTMs can learn complex relationships in time-series data while preserving spatial structures.")  
-            st.write("CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models.")  
-
+            st.write(
+                "A CNN-LSTM model combines Convolutional Neural Networks (CNNs) and Long Short-Term Memory (LSTM) networks to capture spatial and temporal patterns in data. CNNs extract spatial features from input data, while LSTMs process sequential dependencies, making this architecture ideal for spatiotemporal modeling. By leveraging both components, CNN-LSTMs can learn complex relationships in time-series data while preserving spatial structures."
+            )
+            st.write(
+                "CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models."
+            )
 
     year = 2100
 
@@ -144,18 +187,17 @@ def main():
         box = plot_horizontal_boxplot(gp_quartiles, "Gaussian Process")
         st.pyplot(box)
 
-        sea_level_rise = gp_quartiles['50q_dH_dT'] / 1000  # Convert mm to meters
-
+        sea_level_rise = gp_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     if "Random Forest" == selected_emulator:
-        path = f"data/RF_245/RF_Carbon_{co2}_Preds.csv"
+        path = f"data/RF_245/RF_Carbon_{co2}_Preds_no_cumsum.csv"
         rf_df = pd.read_csv(path)
         rf_quartiles = rf_df[rf_df["year"] == year].iloc[0, 1:]
         st.subheader(f"RF Projected Sea Level Rise")
         box = plot_horizontal_boxplot(rf_quartiles, "Random Forest")
         st.pyplot(box)
 
-        sea_level_rise = rf_quartiles['50q_dH_dT'] / 1000  # Convert mm to meters
+        sea_level_rise = rf_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     if "CNN-LTSM" == selected_emulator:
         path = f"data/CNN_245/CNN_Carbon_{co2}_Preds.csv"
@@ -165,13 +207,19 @@ def main():
         box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
         st.pyplot(box)
 
-        sea_level_rise = cnn_quartiles['50q_dH_dT'] / 1000  # Convert mm to meters
+        sea_level_rise = cnn_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
-    st.write("For your convenience we have determined an iPhone 📱 is 146.6mm. Now you can better visualize the sea level rise.")
+    st.write(
+        "For your convenience we have determined an iPhone 📱 is 146.6mm. Now you can better visualize the sea level rise."
+    )
 
-    st.write("The figure above shows you a box plot of our sea level rise. The median (50th percentile) is a reasonable estimate of sea level rise.")
+    st.write(
+        "The figure above shows you a box plot of our sea level rise. The median (50th percentile) is a reasonable estimate of sea level rise."
+    )
 
-    st.write("😱 \"Wow, that's scary!\" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.")
+    st.write(
+        '😱 "Wow, that\'s scary!" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.'
+    )
 
     st.subheader("Sanibel Island Sea Level Rise in 2100")
 
@@ -182,8 +230,12 @@ def main():
     if "Random Forest" == selected_emulator:
         plot_sanibel_dem(sea_level_rise)
 
-    st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage.")
-    st.write("Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.6 meters of sea level rise - this varies a little based on the emulator selected.")
+    st.write(
+        "Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage."
+    )
+    st.write(
+        "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.6 meters of sea level rise - this varies a little based on the emulator selected."
+    )
     st.write("This vacation spot could possibly be submerged!")
 
     if selected_emulator == "Gaussian Process":
@@ -199,6 +251,7 @@ def main():
         plot_miami_dem(sea_level_rise)
     if "Random Forest" == selected_emulator:
         plot_miami_dem(sea_level_rise)
+
 
 if __name__ == "__main__":
     main()
