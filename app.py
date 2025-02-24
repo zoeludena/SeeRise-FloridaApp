@@ -317,5 +317,14 @@ def main():
     if "Random Forest" == selected_emulator:
         plot_dem(sea_level_rise, "Random Forest", "Courtenay")
 
+    if selected_emulator == "Pattern Scaling":
+        plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")
+    if selected_emulator == "Gaussian Process":
+        plot_dem(sea_level_rise,"Gaussian Process", "Cedar Key")
+    if "CNN-LTSM" == selected_emulator:
+        plot_dem(sea_level_rise, "CNN-LTSM", "Cedar Key")
+    if "Random Forest" == selected_emulator:
+        plot_dem(sea_level_rise, "Random Forest", "Cedar Key")
+
 if __name__ == "__main__":
     main()
