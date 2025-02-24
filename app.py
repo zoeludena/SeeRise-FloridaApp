@@ -35,7 +35,7 @@ def emulator_ui():
     selected_emulator = st.sidebar.radio(
         "Choose an emulator:",
         list(emulator_colors.keys()),
-        index=3,  # Default selection
+        index=0,  # Default selection
     )
 
     # Show selected emulator in a color-coded box
