@@ -126,7 +126,7 @@ def main():
         "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons)."
     )
 
-    with st.expander("🗣️ Click to learn about SSP 245"):
+    with st.expander("📣 Click to learn about SSP 245"):
         st.write(
             "SSP 245 stands for Shared Socioeconomic Pathway 2 with 4.5 W/m² Radiative Forcing by 2100."
         )
@@ -148,7 +148,7 @@ def main():
         "You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2100 to predict the temperature 🌡️. From there we predicted the sea level rise using linear regression."
     )
 
-    with st.expander("Learn about your emulator:"):
+    with st.expander("🤖 Learn about your emulator:"):
         if selected_emulator == "Pattern Scaling":
             st.write(
                 'The pattern scaling model is the simplest emulator at our disposal. The model consists of many linear regression models trained on global mean temperature in different emission scenarios. These models regress desired variables (precipitation, diurnal temperature range, etc.) on global mean temperature which is the "scaling" element of the model. Once trained, the model takes a vector of global mean temperatures from a particular emission scenario, and predicts the desired variables using the inputs. This model is powerful yet simple because it can predict local values of particular variables using only globally averaged inputs.'
