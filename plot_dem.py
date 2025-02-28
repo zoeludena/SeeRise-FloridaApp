@@ -1,13 +1,14 @@
 import streamlit as st
 import rasterio
+from rasterio.windows import Window
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 import os
+import matplotlib.colors as mcolors
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-def plot_dem(sea_level, emulator, dem):
+def plot_dem(sea_level, emulator, dem, crop_window=None):
     """
     Plots the DEM of a location with an overlay showing projected flooding
     for a given sea level rise scenario. Flooded areas are shown in dark blue.
@@ -32,16 +33,23 @@ def plot_dem(sea_level, emulator, dem):
         DEM_PATH = os.path.join(BASE_DIR, "Cedar_Key", "Cedar_Key.dem")
     
     with rasterio.open(DEM_PATH) as src:
-        dem_array = src.read(1)  # Read first band
+        dem_array = src.read(1)
         profile = src.profile
         crs = src.crs
         bounds = src.bounds
 
+        if crop_window:
+            row_start, row_end, col_start, col_end = crop_window
+            window = Window(col_start, row_start, col_end - col_start, row_end - row_start)
+            dem_array = src.read(1, window=window)
+        else:
+            dem_array = src.read(1) 
+
+        norm = mcolors.Normalize(vmin=0, vmax=5)
+
         # Replace NoData values with NaN
         dem_array = np.where(dem_array == src.nodata, np.nan, dem_array)
-
-        # st.write(f"DEM min elevation: {np.nanmin(dem_array):.2f}m, max elevation: {np.nanmax(dem_array):.2f}m")
-        # st.write(f"Selected sea level rise: {sea_level:.2f}m")
+        masked_dem = np.where((dem_array >= 0) & (dem_array <= 5), dem_array, np.nan)
 
         if sea_level > np.nanmax(dem_array):
             st.warning("Sea level is above the highest elevation in the DEM. Entire area would be flooded.")
@@ -53,7 +61,7 @@ def plot_dem(sea_level, emulator, dem):
 
         # Plot DEM using the terrain colormap
         fig, ax = plt.subplots(figsize=(8, 6))
-        cax = ax.imshow(dem_array, cmap="grey", origin="upper")
+        cax = ax.imshow(masked_dem, cmap="grey", origin="upper")
         plt.colorbar(cax, label="Elevation (m)")
 
         # Overlay the flooded areas in dark blue using a contour plot
@@ -61,8 +69,8 @@ def plot_dem(sea_level, emulator, dem):
             ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["cornflowerblue"], alpha=0.6)
 
         ax.set_title(f"{emulator} {dem} DEM with {sea_level:.2f}m Sea Level Rise")
-        ax.set_xlabel("Longitude")
-        ax.set_ylabel("Latitude")
+        ax.set_xlabel("X")
+        ax.set_ylabel("Y")
 
         st.pyplot(fig)
 

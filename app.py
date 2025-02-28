@@ -233,7 +233,7 @@ def main():
     st.subheader("Sanibel Island Sea Level Rise in 2100")
 
     if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island")
+        plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island", (0, 950, 0, 1300))
     if selected_emulator == "Gaussian Process":
         plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island")
     if "CNN-LTSM" == selected_emulator:
@@ -254,23 +254,23 @@ def main():
     )
     st.write("This vacation spot could possibly be submerged! 🤿")
 
-    # if selected_emulator == "Pattern Scaling":
-    #     plot_dem(sea_level_rise, "Pattern Scaling", "Tampa")
-    # if selected_emulator == "Gaussian Process":
-    #     plot_dem(sea_level_rise, "Gaussian Process", "Tampa")
-    # if "CNN-LTSM" == selected_emulator:
-    #     plot_dem(sea_level_rise, "CNN-LTSM", "Tampa")
-    # if "Random Forest" == selected_emulator:
-    #     plot_dem(sea_level_rise, "Random Forest", "Tampa")
+    if selected_emulator == "Pattern Scaling":
+        plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
+    if selected_emulator == "Gaussian Process":
+        plot_dem(sea_level_rise, "Gaussian Process", "Tampa", (150, 500, 100, 350))
+    if "CNN-LTSM" == selected_emulator:
+        plot_dem(sea_level_rise, "CNN-LTSM", "Tampa", (150, 500, 100, 350))
+    if "Random Forest" == selected_emulator:
+        plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
 
-    # if selected_emulator == "Pattern Scaling":
-    #     plot_dem(sea_level_rise,"Pattern Scaling", "Miami")
-    # if selected_emulator == "Gaussian Process":
-    #     plot_dem(sea_level_rise,"Gaussian Process", "Miami")
-    # if "CNN-LTSM" == selected_emulator:
-    #     plot_dem(sea_level_rise, "CNN-LTSM", "Miami")
-    # if "Random Forest" == selected_emulator:
-    #     plot_dem(sea_level_rise, "Random Forest", "Miami")
+    if selected_emulator == "Pattern Scaling":
+        plot_dem(sea_level_rise,"Pattern Scaling", "Miami", (400, 1300, 400, 1300))
+    if selected_emulator == "Gaussian Process":
+        plot_dem(sea_level_rise,"Gaussian Process", "Miami", (400, 1300, 400, 1300))
+    if "CNN-LTSM" == selected_emulator:
+        plot_dem(sea_level_rise, "CNN-LTSM", "Miami", (400, 1300, 400, 1300))
+    if "Random Forest" == selected_emulator:
+        plot_dem(sea_level_rise, "Random Forest", "Miami", (400, 1300, 400, 1300))
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Hobe Sound")
@@ -317,13 +317,13 @@ def main():
     st.subheader("Courtenay Sea Level Rise in 2100")
 
     if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise,"Pattern Scaling", "Courtenay")
+        plot_dem(sea_level_rise,"Pattern Scaling", "Courtenay", (200, 500, 75, 300))
     if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise,"Gaussian Process", "Courtenay")
+        plot_dem(sea_level_rise,"Gaussian Process", "Courtenay", (200, 500, 75, 300))
     if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Courtenay")
+        plot_dem(sea_level_rise, "CNN-LTSM", "Courtenay", (200, 500, 75, 300))
     if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Courtenay")
+        plot_dem(sea_level_rise, "Random Forest", "Courtenay", (200, 500, 75, 300))
 
     st.write("Courtenay is within a few miles from the Kennedy Space Center and Merrit Island National Wildlife Refuge.")
 
