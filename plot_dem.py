@@ -72,6 +72,12 @@ def plot_dem(sea_level, emulator, dem, crop_window=None):
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
 
+        if dem not in ["Sanibel Island", "Fort Myers Beach"]:
+            ax.text(
+                0.5, -0.12, "*Note: Areas above 5m are also white.",
+                fontsize=10, ha="right", transform=ax.transAxes, color="black"
+            )
+
         st.pyplot(fig)
 
         # # Display metadata
