@@ -15,7 +15,7 @@ max_co2 = 9500
 def emissions_ui():
     st.sidebar.markdown("# Emissions 🌫️")
     # Change this to start at 0 and end at 9500
-    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 0, max_co2, 3340, 10)
+    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 0, max_co2, 4520, 10)
     return co2
 
 
@@ -123,7 +123,7 @@ def main():
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
     st.write(
-        "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide there is in 2025 (3340 giga tons)."
+        "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide predicted for 2100 by SSP 245 (4520 gigatons). There is 3340 giga tons of carbon dioxide in 2025."
     )
 
     with st.expander("📣 Click to learn about SSP 245"):
