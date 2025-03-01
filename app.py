@@ -122,10 +122,10 @@ def map_ui():
 
 def directions():
     st.write(
-        "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊."
+        "Change the Cumulative CO2 Amount in 2100 to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The affected areas in the figure will be covered by blue 🌊."
     )
     st.write(
-        "You can see even with the default amount of CO2 (4520 Gigatons) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
+        "You can see that, even with the default amount of CO2 (4520 Gigatons), there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
     )
 
 
@@ -239,39 +239,39 @@ def main():
         sea_level_rise = cnn_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
     st.write(
-        "For your convenience we have determined an iPhone 📱 is 146.6mm. Now you can better visualize the sea level rise."
+        "For your convenience, we have determined that the length of an iPhone 📱 is around 146.6 mm to help you with having a better understanding of the extent of sea level rise."
     )
 
     st.write(
-        "The figure above shows you a box plot of our sea level rise. The median (50th percentile) is a reasonable estimate of sea level rise."
+        "The figure above shows you a box plot of predicted sea level rise with uncertainty. The median (50th percentile) is a reasonable estimate of sea level rise."
     )
 
     st.write(
-        '😱 "Wow, that\'s scary!" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.'
+        "😱 \"Wow, that's scary!\" However, what's even more concerning might be the following observation: land slopes. This means the sea level rise will cause ocean water to flow inland, shrinking our coastlines."
     )
 
     st.subheader("Visualizing Sea Level Rise on Florida's Coast in 2100")
 
     st.write(
-        "Below you will see our visualizations for select locations on Florida's coastline. We used a DEM file to provide us with the elevation data of these locations."
+        "Below, you will see our visualizations for select locations on Florida's coastline. We used a DEM file to provide us with the elevation data of these locations."
     )
 
     with st.expander("What is DEM? 🤔"):
         st.write(
-            "DEM stands for digital elevation model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage."
+            "DEM stands for Digital Elevation Model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage."
         )
         st.write(
-            "We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise. It is important to note in high residential areas the DEM is not always accurate. For example, it has trouble with bridges that connect land masses."
+            "We want to show the digital representation of the contours of earths surface to make it easier for you as a audience to visualize sea level rise. It is important to note that, in high residential areas, the DEM is not always accurate. For example, it has trouble with bridges that connect land masses."
         )
         st.write(
-            "We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data."
+            "We obtained these DEM files from the Land Boundary Information System (LABINS), under mapping data."
         )
 
     st.write(
         "Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Audubon."
     )
     st.write(
-        "Some of these locations have greater elevations than 5 meters. However, to highlight the impact we only color 0-5 meters. Anything above or below that range is going to appear white in the visualization."
+        "Some of these locations have greater elevations than 5 meters. However, to highlight the impact, we only color the 0 to 5 meter range. Anything above or below that range is going to appear white in the visualization."
     )
 
     if location == "Sanibel Island":
