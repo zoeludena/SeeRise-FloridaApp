@@ -351,7 +351,7 @@ def main():
             "Davis Islands, Tampa, was developed by D.P. Davis in the 1920s and is considered one of the most exclusive and desirable neighborhoods in the city. Although the coastline of Davis Islands is at a relatively lower elevation, we can see that it is not predicted to be severely affected by sea level rise, with only minor encroachment expected."
         )
         st.write(
-            "The Port of Tampa Bay is the largest port in Florida and a key economic engine of the region. It is also not expected to be significantly impacted by sea level rise."
+            "The Port of Tampa Bay, to the east of Davis Islands, is the largest port in Florida and a key economic engine of the region. It is also not expected to be significantly impacted by sea level rise."
         )
 
     if location == "Miami":
@@ -393,7 +393,7 @@ def main():
             "People losing their homes seems to be a common trend among our visualizations. To make matters worse, the US's trade could be negatively impacted."
         )
         st.write(
-            "Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It is a major player in the global supply chain, suppoting US imports and exports. PortMiami, located in Dodge Island, process over 1 million units of cargo capacity (twenty feet each) per year. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It also is connected to Florida East Coast Railway, which allows for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami. It generates about $43 billion in economic activity annually."
+            "Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It plays a vital role in the global supply chain, supporting US imports and exports. PortMiami, located on Dodge Island, processes over 1 million units of cargo (twenty feet each) per year and generates about $43 billion in economic activity annually. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It is also connected to Florida East Coast Railway, allowing for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami."
         )
         st.write("")
 
@@ -421,19 +421,19 @@ def main():
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
-            "Fort Myers Beach is one of Florida's top beach destinations as it has famous festivals and large competitions. However, it also has ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who also lived there."
+            "Fort Myers Beach is one of Florida's top beach destinations and holds famous festivals and large competitions. It is also of ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who lived there."
         )
 
         st.write(
-            "We can see San Carlos Island and the parts north of Estero Island are going to be submerged under water. This area is extremely vulnerable!"
+            "We can see that San Carlos Island and the northern parts of Estero Island are at risk of submersion. This area is extremely vulnerable!"
         )
 
         st.write(
-            "San Carlos Island serves as a hub for Florida's shrimping industry. Many charter fishing boats, marinas, and seafood packing houses are based there. It is also the prime location for wildlife tours, dolphin-watching cruises, and eco-kayaking."
+            "San Carlos Island serves as a hub for Florida's shrimping industry. Many charter fishing boats, marinas, and seafood packing houses operate there. It is popular for wildlife tours, dolphin-watching cruises, and eco-kayaking."
         )
 
         st.write(
-            "Estero Island is popular tourist destination. You can go on hiking trails, boardwalks, and birdwatching. There is 7 miles of soft, white, warm sand. It is popular for swimming, shelling, jet skiing, and parasailing."
+            "Estero Island is a popular tourist destination. You can explore hiking trails, boardwalks, and birdwatching. There are 7 miles of soft, warm, white sand. It is popular for swimming, shelling, jet skiing, and parasailing."
         )
 
     if location == "Audubon":
@@ -460,11 +460,11 @@ def main():
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
-            "This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!"
+            "The Martin Andersen Beachline Expressway crosses through this region, carrying approximately 213 thousand vehicles a day and serving as a crucial connection for residents and visitors traveling from Florida's east coast beaches to Cape Canaveral. It also connects to routes to the John F. Kennedy Space Center."
         )
 
         st.write(
-            "When changing the Cumulative CO2 amount you can easily see the Savannahs and Diana Shores are in danger. Both of these locations are residential areas. There will be massive amounts of flooding and people will lose their homes."
+            "We can see that the Savannahs and Diana Shores, both residential areas, are at high risk. Severe flooding is likely following sea level rise, which could displace residents and damage homes."
         )
 
     # if selected_emulator == "Pattern Scaling":
