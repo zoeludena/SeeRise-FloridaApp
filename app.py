@@ -250,7 +250,7 @@ def main():
 
     with st.expander("What is DEM? 🤔"):
         st.write("DEM stands for digital elevation model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage.")
-        st.write("We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise.")
+        st.write("We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise. It is important to note in high residential areas the DEM is not always accurate. For example, it has trouble with bridges that connect land masses.")
         st.write("We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data.")
 
     st.write("Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Audubon.")
@@ -302,7 +302,8 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("Tampa has a population of about 350,000 people.")
+        st.write("Tampa is a major economic and cultural hub on Florida's west coast.")
+        st.write("We can see that Tampa is not severely affected by the sea level rise. This is because Davis Islands was developed by D.P. Davis in the 1920s. It is considered one of the most exclusive and desirable neighborhoods in Tampa.")
 
     if location == "Miami":
 
@@ -325,6 +326,14 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
+        st.write("Miami is a major cultural, financial, and tourism hub. It has 6,372,000 residents as of 2025. Miami's population is also growing!")
+        st.write("We can see that North Bay Village, Dodge Island, and the other islands around Miami are in danger.")
+        st.write("North Bay Village and the other islands (Star, Palm, and Hibiscus Islands) are known for their waterfront homes. It is home to celebrities, millionaires, and athletes. 🏠")
+
+        st.write("People losing their homes is a big problem. In addition to this, the United States' trade could be negatively impacted by this sea level rise.")
+        st.write("Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It is a major player in the gloval supply chain, suppoting US imports and exports. PortMiami, located in Dodge Island, process over 1 million units of cargo capacity (twenty feet each) per year. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It also is connected to Florida East Coast Railway, which allows for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami. It generates about $43 billion in economic activity annually.")
+        st.write("")
+
     if location == "Fort Myers Beach":
 
         st.subheader("Fort Myers Beach Sea Level Rise")
@@ -346,9 +355,9 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("Fort Myers Beach is part of the Cape Coral-Fort Myers, Florida Metropolitan Statistical Area. There are many fun celebrations that take place here.")
+        st.write("Fort Myers Beach is one of Florida's top beach destinations as it has famous festivals and large competitions. However, it also has ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who also lived there.")
 
-        st.write("Fort Myers Beach is also a popular tourist destination known for it's white sand beaches, calm waters, and stunning sunsets.")
+        st.write("We can see San Carlos Island and the parts north of Estero Island are going to be submerged under water. This area is extremely vulnerable!")
 
     if location == "Audubon":
 
@@ -372,6 +381,7 @@ def main():
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
         st.write("This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!")
+
         st.write("When changing the Cumulative CO2 amount you can easily see the Savannahs and Diana Shores are in danger. Both of these locations are residential areas. There will be massive amounts of flooding and people will lose their homes.")
 
     # if selected_emulator == "Pattern Scaling":
