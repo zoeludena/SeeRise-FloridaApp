@@ -348,7 +348,10 @@ def main():
 
         st.write("Tampa is a major economic and cultural hub on Florida's west coast.")
         st.write(
-            "We can see that Tampa is not severely affected by the sea level rise. This is because Davis Islands was developed by D.P. Davis in the 1920s. It is considered one of the most exclusive and desirable neighborhoods in Tampa."
+            "Davis Islands, Tampa, was developed by D.P. Davis in the 1920s and is considered one of the most exclusive and desirable neighborhoods in the city. Although the coastline of Davis Islands is at a relatively lower elevation, we can see that it is not predicted to be severely affected by sea level rise, with only minor encroachment expected."
+        )
+        st.write(
+            "The Port of Tampa Bay is the largest port in Florida and a key economic engine of the region. It is also not expected to be significantly impacted by sea level rise."
         )
 
     if location == "Miami":
