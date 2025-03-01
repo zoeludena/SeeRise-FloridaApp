@@ -115,7 +115,7 @@ def plot_horizontal_boxplot(quartiles, emulator):
 
 def map_ui():
     st.sidebar.markdown("# Select Location 🗺️")
-    locations = ["Sanibel Island", "Miami", "Tampa", "Fort Myers Beach", "Audubon"]
+    locations = ["Sanibel Island", "Miami", "Fort Myers Beach", "Audubon", "Your Choice"]
     selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
     return selected_location
 
@@ -268,11 +268,14 @@ def main():
         )
 
     st.write(
-        "Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Audubon."
+        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, and Audubon."
     )
+    
     st.write(
         "Some of these locations have greater elevations than 5 meters. However, to highlight the impact, we only color the 0 to 5 meter range. Anything above or below that range is going to appear white in the visualization."
     )
+
+    st.write("You can upload your own DEM file to visualize other areas!")
 
     if location == "Sanibel Island":
 
@@ -323,36 +326,36 @@ def main():
             "As cumulative carbon dioxide increases, the Clinic for the Rehabilitation of Wildlife and Sanibel Historical Museum and Village become endangered."
         )
 
-    if location == "Tampa":
+    # if location == "Tampa":
 
-        st.subheader("Tampa Sea Level Rise")
+    #     st.subheader("Tampa Sea Level Rise")
 
-        directions()
+    #     directions()
 
-        with st.expander("Click to see a labeled map:"):
-            st.image("data/google_pics/tampa_google.png")
-            st.write(
-                "This is a screenshot of Google Maps to help you better orient yourself."
-            )
+    #     with st.expander("Click to see a labeled map:"):
+    #         st.image("data/google_pics/tampa_google.png")
+    #         st.write(
+    #             "This is a screenshot of Google Maps to help you better orient yourself."
+    #         )
 
-        if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
-        if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise, "Gaussian Process", "Tampa", (150, 500, 100, 350))
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Tampa", (150, 500, 100, 350))
-        if "Random Forest" == selected_emulator:
-            plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
+    #     if selected_emulator == "Pattern Scaling":
+    #         plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
+    #     if selected_emulator == "Gaussian Process":
+    #         plot_dem(sea_level_rise, "Gaussian Process", "Tampa", (150, 500, 100, 350))
+    #     if "CNN-LTSM" == selected_emulator:
+    #         plot_dem(sea_level_rise, "CNN-LTSM", "Tampa", (150, 500, 100, 350))
+    #     if "Random Forest" == selected_emulator:
+    #         plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
 
-        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
+    #     st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
-        st.write("Tampa is a major economic and cultural hub on Florida's west coast.")
-        st.write(
-            "Davis Islands, Tampa, was developed by D.P. Davis in the 1920s and is considered one of the most exclusive and desirable neighborhoods in the city. Although the coastline of Davis Islands is at a relatively lower elevation, we can see that it is not predicted to be severely affected by sea level rise, with only minor encroachment expected."
-        )
-        st.write(
-            "The Port of Tampa Bay, to the east of Davis Islands, is the largest port in Florida and a key economic engine of the region. It is also not expected to be significantly impacted by sea level rise."
-        )
+    #     st.write("Tampa is a major economic and cultural hub on Florida's west coast.")
+    #     st.write(
+    #         "Davis Islands, Tampa, was developed by D.P. Davis in the 1920s and is considered one of the most exclusive and desirable neighborhoods in the city. Although the coastline of Davis Islands is at a relatively lower elevation, we can see that it is not predicted to be severely affected by sea level rise, with only minor encroachment expected."
+    #     )
+    #     st.write(
+    #         "The Port of Tampa Bay, to the east of Davis Islands, is the largest port in Florida and a key economic engine of the region. It is also not expected to be significantly impacted by sea level rise."
+    #     )
 
     if location == "Miami":
 
@@ -476,6 +479,35 @@ def main():
     # if "Random Forest" == selected_emulator:
     #     plot_dem(sea_level_rise, "Random Forest", "Cedar Key")
 
+    if location == "Your Choice":
+        st.subheader("Upload a DEM file to see sea level rise in an area of your choice!")
+
+        st.markdown('You can downloaded a DEM file of Florida from <a href="https://ftp.labins.org/dem/fl/" target="_blank">here</a>. If you do this please follow the directions below.', unsafe_allow_html=True)
+
+        with st.expander("I clicked the link above:"):
+            st.write("You will notice there are many files here. Choose a location that intrigues you. For these directions I will choose Ozello.")
+            st.markdown("1. You will want to download the file that ends in `.dem.sdts.tar.gz`.")
+            st.write("2. You will then need to unzip the file.")
+            st.markdown("3. You will go into the unzipped folder and then unzip the `.dem.sdts` file.")
+            st.markdown("Once you are inside of the open `.dem.sdts` file you will notice a bunch of `.DDF` files. We now need to convert these `.DDF` files unto a DEM file.")
+            st.markdown('4. You will need to download `sdts2dem.exe` from <a href="https://www2.cs.arizona.edu/projects/topovista/sdts2dem/" target="_blank">here</a>.', unsafe_allow_html=True)
+            st.markdown("5. Move `sdts2dem.exe` to where your `.DDF` files are located.")
+            st.write("6. Open a terminal.")
+            st.markdown("7. Navigate to the directory with your `.DDF` files and `sdts2dem.exe` file.")
+            st.markdown("Look at the first four numbers of the `.DDF` files. We will refer to the numbers as `####`")
+            st.markdown("8. Type: `sdts2dem #### location`")
+            st.markdown("For example: `sdts2dem 8735 Ozello`")
+            st.markdown("Now you have a DEM file! Ex) `Ozello.dem`. You can now upload the file.")
+
+        file = st.file_uploader("Upload a DEM file (.dem)", type=["dem"])
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise,"Pattern Scaling", "Your Choice", uploaded_file=file)
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise,"Gaussian Process", "Your Choice", uploaded_file=file)
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Your Choice", uploaded_file=file)
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Your Choice", uploaded_file=file)
 
 if __name__ == "__main__":
     main()
