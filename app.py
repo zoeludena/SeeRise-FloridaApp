@@ -277,9 +277,17 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
-        )
-        st.write("This vacation spot could possibly be submerged! 🤿")
+        # st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
+        # )
+        # st.write("This vacation spot could possibly be submerged! 🤿")
+
+        st.write("We can see Sanibel Island is almost halfway submerged when there is 4520 Gigatons of cumulative carbon dioxide. The part that is submerged happens to be J.N. Ding Darling National Wildlife Refuge and the Dunes.")
+
+        st.write("J.N. Ding Darling National Wildlife Refuge is one of the most important wildlife reguges in the US. It protects mangroves, bird species, and aquatic life. It is a critical habitat for the West Indian manatee and the smalltooth sawfish. It is a 7,600 acre protected area on Sanibel Island. It has been recognized as an Outstanding Florida Water - a title given to ecologically important regions that require extra protection.")
+
+        st.write("The Dunes is a golf and tennis club that allows people to play within a wildlife preserve.")
+
+        st.write("As cumulative carbon dioxide increases the Clinic for the Rehabilitation of Wildlife and Sanibel Historical Museum and Village become endangered.")
 
     if location == "Tampa":
 
@@ -326,12 +334,12 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("Miami is a major cultural, financial, and tourism hub. It has 6,372,000 residents as of 2025. Miami's population is also growing!")
+        st.write("Miami is a major cultural, financial, and tourism hub. It has 6,372,000 residents as of 2025.")
         st.write("We can see that North Bay Village, Dodge Island, and the other islands around Miami are in danger.")
         st.write("North Bay Village and the other islands (Star, Palm, and Hibiscus Islands) are known for their waterfront homes. It is home to celebrities, millionaires, and athletes. 🏠")
 
-        st.write("People losing their homes is a big problem. In addition to this, the United States' trade could be negatively impacted by this sea level rise.")
-        st.write("Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It is a major player in the gloval supply chain, suppoting US imports and exports. PortMiami, located in Dodge Island, process over 1 million units of cargo capacity (twenty feet each) per year. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It also is connected to Florida East Coast Railway, which allows for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami. It generates about $43 billion in economic activity annually.")
+        st.write("People losing their homes seems to be a common trend among our visualizations. To make matters worse, the US's trade could be negatively impacted.")
+        st.write("Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It is a major player in the global supply chain, suppoting US imports and exports. PortMiami, located in Dodge Island, process over 1 million units of cargo capacity (twenty feet each) per year. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It also is connected to Florida East Coast Railway, which allows for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami. It generates about $43 billion in economic activity annually.")
         st.write("")
 
     if location == "Fort Myers Beach":
@@ -358,6 +366,10 @@ def main():
         st.write("Fort Myers Beach is one of Florida's top beach destinations as it has famous festivals and large competitions. However, it also has ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who also lived there.")
 
         st.write("We can see San Carlos Island and the parts north of Estero Island are going to be submerged under water. This area is extremely vulnerable!")
+
+        st.write("San Carlos Island serves as a hub for Florida's shrimping industry. Many charter fishing boats, marinas, and seafood packing houses are based there. It is also the prime location for wildlife tours, dolphin-watching cruises, and eco-kayaking.")
+
+        st.write("Estero Island is popular tourist destination. You can go on hiking trails, boardwalks, and birdwatching. There is 7 miles of soft, white, warm sand. It is popular for swimming, shelling, jet skiing, and parasailing.")
 
     if location == "Audubon":
 
