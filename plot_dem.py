@@ -27,7 +27,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None):
         DEM_PATH = os.path.join(BASE_DIR, "Titusville", "Titusville.dem")
     elif dem == "Cape Canaveral":
         DEM_PATH = os.path.join(BASE_DIR, "Cape_Canaveral", "Cape_Canaveral.dem")
-    elif dem == "Courtenay":
+    elif dem == "Audubon":
         DEM_PATH = os.path.join(BASE_DIR, "Courtenay", "Courtenay.dem")
     elif dem == "Cedar Key":
         DEM_PATH = os.path.join(BASE_DIR, "Cedar_Key", "Cedar_Key.dem")
@@ -68,7 +68,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None):
         if np.any(flooded_mask):  # Ensure we have flooded areas before plotting
             ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["cornflowerblue"], alpha=0.6)
 
-        ax.set_title(f"{emulator} {dem} DEM with {sea_level:.2f}m Sea Level Rise")
+        ax.set_title(f"{emulator} DEM with {sea_level:.2f}m Sea Level Rise")
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
 

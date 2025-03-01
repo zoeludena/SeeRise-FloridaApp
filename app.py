@@ -110,6 +110,12 @@ def plot_horizontal_boxplot(quartiles, emulator):
 
     return fig
 
+def map_ui():
+    st.sidebar.markdown("# Select Location 🗺️")
+    locations = ["Sanibel Island", "Miami", "Tampa", "Fort Myers Beach", "Audubon"]
+    selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
+    return selected_location
+
 
 def main():
     st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
@@ -117,6 +123,8 @@ def main():
     co2 = emissions_ui()
 
     selected_emulator, emulator_colors = emulator_ui()
+
+    location = map_ui()
 
     st.subheader(f"Selected emulator: {selected_emulator}")
 
@@ -230,102 +238,118 @@ def main():
         '😱 "Wow, that\'s scary!" However, even more concerning might be the following observation: land slopes. This means the sea level rise will flow inland, reducing our coastal lines.'
     )
 
-    st.subheader("Sanibel Island Sea Level Rise in 2100")
+    st.subheader("Visualizing Sea Level Rise on Florida's Coast in 2100")
 
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island", (0, 950, 0, 1300))
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island")
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island")
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Sanibel Island")
+    st.write("Below you will see our visualizations for select locations on Florida's coastline. We used a DEM file to provide us with the elevation data of these locations.")
 
-    with st.expander("What is DEM? 🗺️"):
+    with st.expander("What is DEM? 🤔"):
         st.write("DEM stands for digital elevation model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage.")
         st.write("We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise.")
         st.write("We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data.")
 
-    st.write(
+    st.write("Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Courtenay.")
+    st.write("Some of these locations have greater elevations than 5 meters. However, to highlight the impact we only color 0-5 meters. Anything above or below that range is going to appear white in the visualization.")
+
+    if location == "Sanibel Island":
+
+        st.subheader("Sanibel Island Sea Level Rise")
+
+        with st.expander("Click to see a labeled map:"):
+            st.image("data/google_pics/sanibel_google.png")
+            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island", (0, 950, 0, 1300))
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island")
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island")
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Sanibel Island")
+
+        st.write(
         "Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
-    )
-    st.write(
-        "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
-    )
-    st.write("This vacation spot could possibly be submerged! 🤿")
+        )
+        st.write(
+            "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
+        )
+        st.write("This vacation spot could possibly be submerged! 🤿")
 
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise, "Gaussian Process", "Tampa", (150, 500, 100, 350))
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Tampa", (150, 500, 100, 350))
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
+    if location == "Tampa":
 
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise,"Pattern Scaling", "Miami", (400, 1300, 400, 1300))
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise,"Gaussian Process", "Miami", (400, 1300, 400, 1300))
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Miami", (400, 1300, 400, 1300))
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Miami", (400, 1300, 400, 1300))
+        st.subheader("Tampa Sea Level Rise")
 
-    # if selected_emulator == "Pattern Scaling":
-    #     plot_dem(sea_level_rise,"Pattern Scaling", "Hobe Sound")
-    # if selected_emulator == "Gaussian Process":
-    #     plot_dem(sea_level_rise,"Gaussian Process", "Hobe Sound")
-    # if "CNN-LTSM" == selected_emulator:
-    #     plot_dem(sea_level_rise, "CNN-LTSM", "Hobe Sound")
-    # if "Random Forest" == selected_emulator:
-    #     plot_dem(sea_level_rise, "Random Forest", "Hobe Sound")
+        with st.expander("Click to see a labeled map:"):
+            st.image("data/google_pics/tampa_google.png")
+            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
 
-    st.subheader("Fort Myers Beach Sea Level Rise in 2100")
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise, "Gaussian Process", "Tampa", (150, 500, 100, 350))
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Tampa", (150, 500, 100, 350))
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
 
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise,"Pattern Scaling", "Fort Myers Beach")
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise,"Gaussian Process", "Fort Myers Beach")
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Fort Myers Beach")
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
+        st.write("Tampa has a population of about 350,000 people.")
 
-    st.write("Fort Myers Beach is part of the Cape Coral-Fort Myers, Florida Metropolitan Statistical Area. There are many fun celebrations that take place here.")
+    if location == "Miami":
 
-    st.write("Fort Myers Beach is also a popular tourist destination known for it's white sand beaches, calm waters, and stunning sunsets.")
+        st.subheader("Miami Sea Level Rise")
 
-    # if selected_emulator == "Pattern Scaling":
-    #     plot_dem(sea_level_rise,"Pattern Scaling", "Titusville")
-    # if selected_emulator == "Gaussian Process":
-    #     plot_dem(sea_level_rise,"Gaussian Process", "Titusville")
-    # if "CNN-LTSM" == selected_emulator:
-    #     plot_dem(sea_level_rise, "CNN-LTSM", "Titusville")
-    # if "Random Forest" == selected_emulator:
-    #     plot_dem(sea_level_rise, "Random Forest", "Titusville")
+        with st.expander("Click to see a labeled map:"):
+            st.image("data/google_pics/miami_google.png")
+            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
 
-    # if selected_emulator == "Pattern Scaling":
-    #     plot_dem(sea_level_rise,"Pattern Scaling", "Cape Canaveral")
-    # if selected_emulator == "Gaussian Process":
-    #     plot_dem(sea_level_rise,"Gaussian Process", "Cape Canaveral")
-    # if "CNN-LTSM" == selected_emulator:
-    #     plot_dem(sea_level_rise, "CNN-LTSM", "Cape Canaveral")
-    # if "Random Forest" == selected_emulator:
-    #     plot_dem(sea_level_rise, "Random Forest", "Cape Canaveral")
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise,"Pattern Scaling", "Miami", (0, 1300, 400, 1300))
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise,"Gaussian Process", "Miami", (400, 1300, 400, 1300))
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Miami", (400, 1300, 400, 1300))
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Miami", (400, 1300, 400, 1300))
 
-    st.subheader("Courtenay Sea Level Rise in 2100")
+    if location == "Fort Myers Beach":
 
-    if selected_emulator == "Pattern Scaling":
-        plot_dem(sea_level_rise,"Pattern Scaling", "Courtenay", (200, 500, 75, 300))
-    if selected_emulator == "Gaussian Process":
-        plot_dem(sea_level_rise,"Gaussian Process", "Courtenay", (200, 500, 75, 300))
-    if "CNN-LTSM" == selected_emulator:
-        plot_dem(sea_level_rise, "CNN-LTSM", "Courtenay", (200, 500, 75, 300))
-    if "Random Forest" == selected_emulator:
-        plot_dem(sea_level_rise, "Random Forest", "Courtenay", (200, 500, 75, 300))
+        st.subheader("Fort Myers Beach Sea Level Rise")
 
-    st.write("Courtenay is within a few miles from the Kennedy Space Center and Merrit Island National Wildlife Refuge.")
+        with st.expander("Click to see a labeled map:"):
+            st.image("data/google_pics/fort_myers_google.png")
+            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise,"Pattern Scaling", "Fort Myers Beach")
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise,"Gaussian Process", "Fort Myers Beach")
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Fort Myers Beach")
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
+
+        st.write("Fort Myers Beach is part of the Cape Coral-Fort Myers, Florida Metropolitan Statistical Area. There are many fun celebrations that take place here.")
+
+        st.write("Fort Myers Beach is also a popular tourist destination known for it's white sand beaches, calm waters, and stunning sunsets.")
+
+    if location == "Audubon":
+
+        st.subheader("Audubon Sea Level Rise")
+
+        with st.expander("Click to see a labeled map:"):
+            st.image("data/google_pics/audubon_google.png")
+            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise,"Pattern Scaling", "Audubon", (200, 500, 0, 400))
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise,"Gaussian Process", "Audubon", (200, 500, 0, 400))
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Audubon", (200, 500, 0, 400))
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Audubon", (200, 500, 0, 400))
+
+        st.write("This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!")
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")
