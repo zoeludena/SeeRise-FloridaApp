@@ -453,9 +453,9 @@ def main():
             "Estero Island is a popular tourist destination. You can explore hiking trails, boardwalks, and birdwatching. There are 7 miles of soft, warm, white sand. It is popular for swimming, shelling, jet skiing, and parasailing."
         )
 
-    if location == "Audubon":
+    if location == "Merrit Island":
 
-        st.subheader("Audubon Sea Level Rise")
+        st.subheader("Merrit Island Sea Level Rise")
 
         directions()
 
