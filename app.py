@@ -116,6 +116,12 @@ def map_ui():
     selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
     return selected_location
 
+def directions():
+        st.write(
+            "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊."
+        )
+        st.write("You can see even with the default amount of CO2 (4520 Gigatons) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected.")
+
 
 def main():
     st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
@@ -247,12 +253,14 @@ def main():
         st.write("We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise.")
         st.write("We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data.")
 
-    st.write("Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Courtenay.")
+    st.write("Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Audubon.")
     st.write("Some of these locations have greater elevations than 5 meters. However, to highlight the impact we only color 0-5 meters. Anything above or below that range is going to appear white in the visualization.")
 
     if location == "Sanibel Island":
 
         st.subheader("Sanibel Island Sea Level Rise")
+
+        directions()
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/sanibel_google.png")
@@ -261,23 +269,23 @@ def main():
         if selected_emulator == "Pattern Scaling":
             plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island", (0, 950, 0, 1300))
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island")
+            plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island", (0, 950, 0, 1300))
         if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island")
+            plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island", (0, 950, 0, 1300))
         if "Random Forest" == selected_emulator:
-            plot_dem(sea_level_rise, "Random Forest", "Sanibel Island")
+            plot_dem(sea_level_rise, "Random Forest", "Sanibel Island", (0, 950, 0, 1300))
 
-        st.write(
-        "Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
-        )
-        st.write(
-            "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊. You can see even with the default amount of CO2 (how much there is in 2025) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
+        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+
+        st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
         )
         st.write("This vacation spot could possibly be submerged! 🤿")
 
     if location == "Tampa":
 
         st.subheader("Tampa Sea Level Rise")
+
+        directions()
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/tampa_google.png")
@@ -292,11 +300,15 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
 
+        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+
         st.write("Tampa has a population of about 350,000 people.")
 
     if location == "Miami":
 
         st.subheader("Miami Sea Level Rise")
+
+        directions()
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/miami_google.png")
@@ -311,9 +323,13 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Miami", (400, 1300, 400, 1300))
 
+        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+
     if location == "Fort Myers Beach":
 
         st.subheader("Fort Myers Beach Sea Level Rise")
+
+        directions()
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/fort_myers_google.png")
@@ -328,6 +344,8 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
 
+        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+
         st.write("Fort Myers Beach is part of the Cape Coral-Fort Myers, Florida Metropolitan Statistical Area. There are many fun celebrations that take place here.")
 
         st.write("Fort Myers Beach is also a popular tourist destination known for it's white sand beaches, calm waters, and stunning sunsets.")
@@ -335,6 +353,8 @@ def main():
     if location == "Audubon":
 
         st.subheader("Audubon Sea Level Rise")
+
+        directions()
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/audubon_google.png")
@@ -348,6 +368,8 @@ def main():
             plot_dem(sea_level_rise, "CNN-LTSM", "Audubon", (200, 500, 0, 400))
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Audubon", (200, 500, 0, 400))
+
+        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
         st.write("This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!")
 
