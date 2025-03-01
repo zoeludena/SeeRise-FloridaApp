@@ -15,7 +15,9 @@ max_co2 = 9500
 def emissions_ui():
     st.sidebar.markdown("# Emissions 🌫️")
     # Change this to start at 0 and end at 9500
-    co2 = st.sidebar.slider("Cumulative CO2 Amount (GtCO2)", 0, max_co2, 4520, 10)
+    co2 = st.sidebar.slider(
+        "Cumulative CO2 Amount (GtCO2) in 2100", 0, max_co2, 4520, 10
+    )
     return co2
 
 
@@ -110,17 +112,21 @@ def plot_horizontal_boxplot(quartiles, emulator):
 
     return fig
 
+
 def map_ui():
     st.sidebar.markdown("# Select Location 🗺️")
     locations = ["Sanibel Island", "Miami", "Tampa", "Fort Myers Beach", "Audubon"]
     selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
     return selected_location
 
+
 def directions():
-        st.write(
-            "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊."
-        )
-        st.write("You can see even with the default amount of CO2 (4520 Gigatons) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected.")
+    st.write(
+        "Change the Cumulative CO2 Amount to see how having that much CO2 in the atmosphere in 2100 will affect sea level rise. The figure will have blue cover the affected areas 🌊."
+    )
+    st.write(
+        "You can see even with the default amount of CO2 (4520 Gigatons) there is about 0.5 meters of sea level rise - this varies a little based on the emulator selected."
+    )
 
 
 def main():
@@ -137,7 +143,7 @@ def main():
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
     st.write(
-        "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is how many gigatons of carbon dioxide predicted for 2100 by SSP 245 (4520 gigatons). There is 3340 giga tons of carbon dioxide in 2025."
+        "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is the amount of carbon dioxide (in gigatons) predicted for 2100 by SSP 245 (4520 gigatons). There is 3340 gigatons of carbon dioxide in 2025."
     )
 
     with st.expander("📣 Click to learn about SSP 245"):
@@ -152,14 +158,14 @@ def main():
             "We believe this is the most probable future. It's common name is the Middle of the Road Scenario."
         )
         st.write(
-            "RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means A stabilization scenario where emissions peak around mid-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100)."
+            "RCP4.5 or 4.5 W/m² Radiative Forcing by 2100 means a stabilization scenario where emissions peak around mid-21-century and then decline. It assumes that mitigation policies slow global warming but do not fully stop it. This will lead to a moderate level of warming (~2.5-3°C above pre-industrial levels by 2100)."
         )
         st.write(
-            "This allows the temperature to rise a little more that what the Paris Agreement hopes for."
+            "This future allows the temperature to rise a little more that what the Paris Agreement hopes for."
         )
 
     st.write(
-        "You can select different emulators based off of the ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2100 to predict the temperature 🌡️. From there we predicted the sea level rise using linear regression."
+        "You can select different emulators based off of ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression."
     )
 
     with st.expander("🤖 Learn about your emulator:"):
@@ -169,7 +175,7 @@ def main():
             )
         elif selected_emulator == "Gaussian Process":
             st.write(
-                "A Gaussian Process (GP) model, used in the Climate Bench paper, is a probabilistic framework ideal for regression and classification tasks. GPs model functions by defining a prior characterized by a mean function, m(x), representing the expected value at x, and a covariance function, k(x,x'), which measures similarity between inputs x and x'. Using Bayesian inference, GPs update this prior with training data to produce a posterior distribution. For new inputs, predictions are made as a distribution with a mean (most likely value) and variance (uncertainty estimate)."
+                "A Gaussian Process (GP) model is a probabilistic framework ideal for regression and classification tasks. GPs model functions by defining a prior characterized by a mean function, m(x), representing the expected value at x, and a covariance function, k(x, x'), which measures similarity between inputs x and x'. Using Bayesian inference, GPs update this prior with training data to produce a posterior distribution. For new inputs, predictions are made as a distribution with a mean (most likely value) and variance (uncertainty estimate)."
             )
             st.write(
                 "GP models are well-suited for climate prediction. Climate systems are governed by complex, smooth, and often nonlinear relationships, which GPs can model through appropriately chosen kernels. Moreover, their ability to provide uncertainty estimates is invaluable when working with limited or noisy climate data, as these estimates can highlight regions where the model is less confident in its predictions. Finally, the interpretability of GP models aligns well with scientific practices, allowing researchers to explore the relationships captured by the covariance function and gain insights into the modeled climate dynamics."
@@ -179,7 +185,7 @@ def main():
                 "Random Forest is an ensemble method that aggregates the predictions of multiple decision trees to enhance predictive performance. Decision trees, as the base models, are particularly effective at capturing non-linear relationships and interactions between variables but are prone to overfitting. Random Forest addresses this limitation by averaging the predictions of all individual trees, which reduces variance and increases robustness. This makes it well-suited for climate model emulation, where separate models are often developed for multiple target variables."
             )
             st.write(
-                "One key advantage of Random Forest in climate model emulation is its interpretability, which aids in informing decision-making. While a common drawback of Random Forest is its inability to extrapolate beyond the range of training data, this is not a significant concern in this context. Relevant predictions in climate modeling typically lie within the range defined by historical climate data and plausible scenarios, such as the low-emissions SSP126 and high-emissions SSP585 pathways. This makes Random Forest an effective and practical choice for emulating climate models."
+                "One key advantage of Random Forest in climate model emulation is its interpretability, which aids in informing decision-making. While a common drawback of Random Forest is its inability to extrapolate beyond the range of training data, this is not a significant concern in this context. Relevant predictions in climate modeling typically lie within the range defined by historical climate data and plausible scenarios, such as the low-emissions SSP 126 and high-emissions SSP 585 pathways. This makes Random Forest an effective and practical choice for emulating climate models."
             )
         else:
             st.write(
@@ -246,15 +252,27 @@ def main():
 
     st.subheader("Visualizing Sea Level Rise on Florida's Coast in 2100")
 
-    st.write("Below you will see our visualizations for select locations on Florida's coastline. We used a DEM file to provide us with the elevation data of these locations.")
+    st.write(
+        "Below you will see our visualizations for select locations on Florida's coastline. We used a DEM file to provide us with the elevation data of these locations."
+    )
 
     with st.expander("What is DEM? 🤔"):
-        st.write("DEM stands for digital elevation model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage.")
-        st.write("We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise. It is important to note in high residential areas the DEM is not always accurate. For example, it has trouble with bridges that connect land masses.")
-        st.write("We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data.")
+        st.write(
+            "DEM stands for digital elevation model. It aims to recreate the topographic surface of the Earth excluding buildings and foliage."
+        )
+        st.write(
+            "We wanted to show the digital representation of the contours of earths surface. This way it would be easier for our audience to visualize sea level rise. It is important to note in high residential areas the DEM is not always accurate. For example, it has trouble with bridges that connect land masses."
+        )
+        st.write(
+            "We obtained these DEM files from the Land Boundary Information System (LABINS). Under mapping data."
+        )
 
-    st.write("Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Audubon.")
-    st.write("Some of these locations have greater elevations than 5 meters. However, to highlight the impact we only color 0-5 meters. Anything above or below that range is going to appear white in the visualization.")
+    st.write(
+        "Your options for locations are: Sanibel Island, Miami, Tampa, Fort Myers Beach, and Audubon."
+    )
+    st.write(
+        "Some of these locations have greater elevations than 5 meters. However, to highlight the impact we only color 0-5 meters. Anything above or below that range is going to appear white in the visualization."
+    )
 
     if location == "Sanibel Island":
 
@@ -264,16 +282,24 @@ def main():
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/sanibel_google.png")
-            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+            st.write(
+                "This is a screenshot of Google Maps to help you better orient yourself."
+            )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise, "Pattern Scaling", "Sanibel Island", (0, 950, 0, 1300))
+            plot_dem(
+                sea_level_rise, "Pattern Scaling", "Sanibel Island", (0, 950, 0, 1300)
+            )
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise, "Gaussian Process", "Sanibel Island", (0, 950, 0, 1300))
+            plot_dem(
+                sea_level_rise, "Gaussian Process", "Sanibel Island", (0, 950, 0, 1300)
+            )
         if "CNN-LTSM" == selected_emulator:
             plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island", (0, 950, 0, 1300))
         if "Random Forest" == selected_emulator:
-            plot_dem(sea_level_rise, "Random Forest", "Sanibel Island", (0, 950, 0, 1300))
+            plot_dem(
+                sea_level_rise, "Random Forest", "Sanibel Island", (0, 950, 0, 1300)
+            )
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
@@ -281,13 +307,21 @@ def main():
         # )
         # st.write("This vacation spot could possibly be submerged! 🤿")
 
-        st.write("We can see Sanibel Island is almost halfway submerged when there is 4520 Gigatons of cumulative carbon dioxide. The part that is submerged happens to be J.N. Ding Darling National Wildlife Refuge and the Dunes.")
+        st.write(
+            "We can see Sanibel Island is almost halfway submerged when there is 4520 Gigatons of cumulative carbon dioxide. The part that is submerged happens to be J.N. Ding Darling National Wildlife Refuge and the Dunes."
+        )
 
-        st.write("J.N. Ding Darling National Wildlife Refuge is one of the most important wildlife reguges in the US. It protects mangroves, bird species, and aquatic life. It is a critical habitat for the West Indian manatee and the smalltooth sawfish. It is a 7,600 acre protected area on Sanibel Island. It has been recognized as an Outstanding Florida Water - a title given to ecologically important regions that require extra protection.")
+        st.write(
+            "J.N. Ding Darling National Wildlife Refuge is one of the most important wildlife reguges in the US. It protects mangroves, bird species, and aquatic life. It is a critical habitat for the West Indian manatee and the smalltooth sawfish. It is a 7,600 acre protected area on Sanibel Island. It has been recognized as an Outstanding Florida Water - a title given to ecologically important regions that require extra protection."
+        )
 
-        st.write("The Dunes is a golf and tennis club that allows people to play within a wildlife preserve.")
+        st.write(
+            "The Dunes is a golf and tennis club that allows people to play within a wildlife preserve."
+        )
 
-        st.write("As cumulative carbon dioxide increases the Clinic for the Rehabilitation of Wildlife and Sanibel Historical Museum and Village become endangered.")
+        st.write(
+            "As cumulative carbon dioxide increases the Clinic for the Rehabilitation of Wildlife and Sanibel Historical Museum and Village become endangered."
+        )
 
     if location == "Tampa":
 
@@ -297,7 +331,9 @@ def main():
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/tampa_google.png")
-            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+            st.write(
+                "This is a screenshot of Google Maps to help you better orient yourself."
+            )
 
         if selected_emulator == "Pattern Scaling":
             plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
@@ -311,7 +347,9 @@ def main():
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
         st.write("Tampa is a major economic and cultural hub on Florida's west coast.")
-        st.write("We can see that Tampa is not severely affected by the sea level rise. This is because Davis Islands was developed by D.P. Davis in the 1920s. It is considered one of the most exclusive and desirable neighborhoods in Tampa.")
+        st.write(
+            "We can see that Tampa is not severely affected by the sea level rise. This is because Davis Islands was developed by D.P. Davis in the 1920s. It is considered one of the most exclusive and desirable neighborhoods in Tampa."
+        )
 
     if location == "Miami":
 
@@ -321,12 +359,16 @@ def main():
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/miami_google.png")
-            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+            st.write(
+                "This is a screenshot of Google Maps to help you better orient yourself."
+            )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise,"Pattern Scaling", "Miami", (0, 1300, 400, 1300))
+            plot_dem(sea_level_rise, "Pattern Scaling", "Miami", (0, 1300, 400, 1300))
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise,"Gaussian Process", "Miami", (400, 1300, 400, 1300))
+            plot_dem(
+                sea_level_rise, "Gaussian Process", "Miami", (400, 1300, 400, 1300)
+            )
         if "CNN-LTSM" == selected_emulator:
             plot_dem(sea_level_rise, "CNN-LTSM", "Miami", (400, 1300, 400, 1300))
         if "Random Forest" == selected_emulator:
@@ -334,12 +376,22 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("Miami is a major cultural, financial, and tourism hub. It has 6,372,000 residents as of 2025.")
-        st.write("We can see that North Bay Village, Dodge Island, and the other islands around Miami are in danger.")
-        st.write("North Bay Village and the other islands (Star, Palm, and Hibiscus Islands) are known for their waterfront homes. It is home to celebrities, millionaires, and athletes. 🏠")
+        st.write(
+            "Miami is a major cultural, financial, and tourism hub. It has 6,372,000 residents as of 2025."
+        )
+        st.write(
+            "We can see that North Bay Village, Dodge Island, and the other islands around Miami are in danger."
+        )
+        st.write(
+            "North Bay Village and the other islands (Star, Palm, and Hibiscus Islands) are known for their waterfront homes. It is home to celebrities, millionaires, and athletes. 🏠"
+        )
 
-        st.write("People losing their homes seems to be a common trend among our visualizations. To make matters worse, the US's trade could be negatively impacted.")
-        st.write("Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It is a major player in the global supply chain, suppoting US imports and exports. PortMiami, located in Dodge Island, process over 1 million units of cargo capacity (twenty feet each) per year. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It also is connected to Florida East Coast Railway, which allows for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami. It generates about $43 billion in economic activity annually.")
+        st.write(
+            "People losing their homes seems to be a common trend among our visualizations. To make matters worse, the US's trade could be negatively impacted."
+        )
+        st.write(
+            "Dodge Island is a major hub for global shipping, cargo, and tourism 📦. It is a major player in the global supply chain, suppoting US imports and exports. PortMiami, located in Dodge Island, process over 1 million units of cargo capacity (twenty feet each) per year. This makes it one of the busiest ports in the Southeastern US. It provides faster access to Latin America and Caribbean markets than other East Coast ports. It also is connected to Florida East Coast Railway, which allows for rapid distribution. Over 240,000 jobs in Florida depend on PortMiami. It generates about $43 billion in economic activity annually."
+        )
         st.write("")
 
     if location == "Fort Myers Beach":
@@ -350,12 +402,14 @@ def main():
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/fort_myers_google.png")
-            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+            st.write(
+                "This is a screenshot of Google Maps to help you better orient yourself."
+            )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise,"Pattern Scaling", "Fort Myers Beach")
+            plot_dem(sea_level_rise, "Pattern Scaling", "Fort Myers Beach")
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise,"Gaussian Process", "Fort Myers Beach")
+            plot_dem(sea_level_rise, "Gaussian Process", "Fort Myers Beach")
         if "CNN-LTSM" == selected_emulator:
             plot_dem(sea_level_rise, "CNN-LTSM", "Fort Myers Beach")
         if "Random Forest" == selected_emulator:
@@ -363,13 +417,21 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("Fort Myers Beach is one of Florida's top beach destinations as it has famous festivals and large competitions. However, it also has ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who also lived there.")
+        st.write(
+            "Fort Myers Beach is one of Florida's top beach destinations as it has famous festivals and large competitions. However, it also has ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who also lived there."
+        )
 
-        st.write("We can see San Carlos Island and the parts north of Estero Island are going to be submerged under water. This area is extremely vulnerable!")
+        st.write(
+            "We can see San Carlos Island and the parts north of Estero Island are going to be submerged under water. This area is extremely vulnerable!"
+        )
 
-        st.write("San Carlos Island serves as a hub for Florida's shrimping industry. Many charter fishing boats, marinas, and seafood packing houses are based there. It is also the prime location for wildlife tours, dolphin-watching cruises, and eco-kayaking.")
+        st.write(
+            "San Carlos Island serves as a hub for Florida's shrimping industry. Many charter fishing boats, marinas, and seafood packing houses are based there. It is also the prime location for wildlife tours, dolphin-watching cruises, and eco-kayaking."
+        )
 
-        st.write("Estero Island is popular tourist destination. You can go on hiking trails, boardwalks, and birdwatching. There is 7 miles of soft, white, warm sand. It is popular for swimming, shelling, jet skiing, and parasailing.")
+        st.write(
+            "Estero Island is popular tourist destination. You can go on hiking trails, boardwalks, and birdwatching. There is 7 miles of soft, white, warm sand. It is popular for swimming, shelling, jet skiing, and parasailing."
+        )
 
     if location == "Audubon":
 
@@ -379,12 +441,14 @@ def main():
 
         with st.expander("Click to see a labeled map:"):
             st.image("data/google_pics/audubon_google.png")
-            st.write("This is a screenshot of Google Maps to help you better orient yourself.")
+            st.write(
+                "This is a screenshot of Google Maps to help you better orient yourself."
+            )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise,"Pattern Scaling", "Audubon", (200, 500, 0, 400))
+            plot_dem(sea_level_rise, "Pattern Scaling", "Audubon", (200, 500, 0, 400))
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise,"Gaussian Process", "Audubon", (200, 500, 0, 400))
+            plot_dem(sea_level_rise, "Gaussian Process", "Audubon", (200, 500, 0, 400))
         if "CNN-LTSM" == selected_emulator:
             plot_dem(sea_level_rise, "CNN-LTSM", "Audubon", (200, 500, 0, 400))
         if "Random Forest" == selected_emulator:
@@ -392,9 +456,13 @@ def main():
 
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
-        st.write("This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!")
+        st.write(
+            "This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!"
+        )
 
-        st.write("When changing the Cumulative CO2 amount you can easily see the Savannahs and Diana Shores are in danger. Both of these locations are residential areas. There will be massive amounts of flooding and people will lose their homes.")
+        st.write(
+            "When changing the Cumulative CO2 amount you can easily see the Savannahs and Diana Shores are in danger. Both of these locations are residential areas. There will be massive amounts of flooding and people will lose their homes."
+        )
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")
@@ -404,6 +472,7 @@ def main():
     #     plot_dem(sea_level_rise, "CNN-LTSM", "Cedar Key")
     # if "Random Forest" == selected_emulator:
     #     plot_dem(sea_level_rise, "Random Forest", "Cedar Key")
+
 
 if __name__ == "__main__":
     main()
