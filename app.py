@@ -301,18 +301,18 @@ def main():
                 sea_level_rise, "Random Forest", "Sanibel Island", (0, 950, 0, 1300)
             )
 
-        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         # st.write("Above you can see Sanibel Island. It is considered the perfect getaway destination in Florida. It is popular due to their pristine white beaches and lush foliage. 🏖️🌴"
         # )
         # st.write("This vacation spot could possibly be submerged! 🤿")
 
         st.write(
-            "We can see Sanibel Island is almost halfway submerged when there is 4520 Gigatons of cumulative carbon dioxide. The part that is submerged happens to be J.N. Ding Darling National Wildlife Refuge and the Dunes."
+            "We can see that Sanibel Island is almost halfway submerged when there is 4520 Gigatons of cumulative carbon dioxide in 2100. The part that is submerged happens to be J.N. Ding Darling National Wildlife Refuge and the Dunes."
         )
 
         st.write(
-            "J.N. Ding Darling National Wildlife Refuge is one of the most important wildlife reguges in the US. It protects mangroves, bird species, and aquatic life. It is a critical habitat for the West Indian manatee and the smalltooth sawfish. It is a 7,600 acre protected area on Sanibel Island. It has been recognized as an Outstanding Florida Water - a title given to ecologically important regions that require extra protection."
+            "J.N. Ding Darling National Wildlife Refuge is one of the most important wildlife refuges in the US. It protects mangroves, bird species, and aquatic life. It is a critical habitat for the West Indian manatee and the smalltooth sawfish. It is a 7,600 acre protected area on Sanibel Island. It has been recognized as an Outstanding Florida Water - a title given to ecologically important regions that require extra protection."
         )
 
         st.write(
@@ -320,7 +320,7 @@ def main():
         )
 
         st.write(
-            "As cumulative carbon dioxide increases the Clinic for the Rehabilitation of Wildlife and Sanibel Historical Museum and Village become endangered."
+            "As cumulative carbon dioxide increases, the Clinic for the Rehabilitation of Wildlife and Sanibel Historical Museum and Village become endangered."
         )
 
     if location == "Tampa":
@@ -344,7 +344,7 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
 
-        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write("Tampa is a major economic and cultural hub on Florida's west coast.")
         st.write(
@@ -374,7 +374,7 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Miami", (400, 1300, 400, 1300))
 
-        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
             "Miami is a major cultural, financial, and tourism hub. It has 6,372,000 residents as of 2025."
@@ -415,7 +415,7 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
 
-        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
             "Fort Myers Beach is one of Florida's top beach destinations as it has famous festivals and large competitions. However, it also has ecological and historical importance. It is home to Lovers Key State Park, which is a protected area with mangroves, manatees, and wildlife. The Mound House preserves the history of the Calusa Native Americans who also lived there."
@@ -454,7 +454,7 @@ def main():
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Audubon", (200, 500, 0, 400))
 
-        st.write(f"As a reminder you are using the {selected_emulator} emulator.")
+        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
             "This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!"
