@@ -196,6 +196,19 @@ def main():
                 "CNN-LSTM models are particularly useful for climate model emulation. Climate data involves intricate spatial patterns and long-term temporal dependencies, which CNN-LSTMs effectively capture. They can emulate computationally expensive climate simulations by learning from historical climate outputs, enabling faster predictions. This approach is valuable for studying climate variability, extreme events, and future projections while reducing computational costs compared to full-scale climate models."
             )
 
+    st.subheader(f"{selected_emulator} compared to NASA's Median Prediction")
+    if selected_emulator == "Pattern Scaling":
+        st.image("assets/2025_fixed_ps_preds.png")
+    elif selected_emulator == "Gaussian Process":
+        st.image("assets/2025_fixed_gp_preds.png")
+    elif selected_emulator == 'Random Forest':
+        st.image("assets/2025_fixed_rf_preds.png")
+    else:
+        st.image("assets/2025_fixed_cnn_preds.png")
+
+    st.markdown("The visualization above shows you our emulator's uncertainty compared to NASA's median projection. This projection was collected from NASA's <a href='https://sealevel.nasa.gov/ipcc-ar6-sea-level-projection-tool/?type=global' target='_blank'>Sea Level Projection Tool</a>.", unsafe_allow_html=True)
+    st.write("Our emulators were calculated while keeping the other greenhouse gases fixed to their SSP 245 year 2025 equivalents. For this reason you will see they all underpredict, but NASA's projection is within the uncertainty interval.")
+
     year = 2100
 
     if "Pattern Scaling" == selected_emulator:
@@ -285,7 +298,7 @@ def main():
         directions()
 
         with st.expander("Click to see a labeled map:"):
-            st.image("data/google_pics/sanibel_google.png")
+            st.image("assets/google_pics/sanibel_google.png")
             st.write(
                 "This is a screenshot of Google Maps to help you better orient yourself."
             )
@@ -365,7 +378,7 @@ def main():
         directions()
 
         with st.expander("Click to see a labeled map:"):
-            st.image("data/google_pics/miami_google.png")
+            st.image("assets/google_pics/miami_google.png")
             st.write(
                 "This is a screenshot of Google Maps to help you better orient yourself."
             )
@@ -408,7 +421,7 @@ def main():
         directions()
 
         with st.expander("Click to see a labeled map:"):
-            st.image("data/google_pics/fort_myers_google.png")
+            st.image("assets/google_pics/fort_myers_google.png")
             st.write(
                 "This is a screenshot of Google Maps to help you better orient yourself."
             )
@@ -447,7 +460,7 @@ def main():
         directions()
 
         with st.expander("Click to see a labeled map:"):
-            st.image("data/google_pics/audubon_google.png")
+            st.image("assets/google_pics/audubon_google.png")
             st.write(
                 "This is a screenshot of Google Maps to help you better orient yourself."
             )
