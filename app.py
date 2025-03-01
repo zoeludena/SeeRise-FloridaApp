@@ -372,6 +372,7 @@ def main():
         st.write(f"As a reminder you are using the {selected_emulator} emulator.")
 
         st.write("This location contains Martin Andersen Beachline Expressway. It is a crucial connection for residents and visitors travelling from the east coast beaches to Cape Canaveral. It also connects to the John F. Kennedy Space Center. According to their website this expressway carries 212.8 thousand vehicles a day!")
+        st.write("When changing the Cumulative CO2 amount you can easily see the Savannahs and Diana Shores are in danger. Both of these locations are residential areas. There will be massive amounts of flooding and people will lose their homes.")
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")
