@@ -164,7 +164,7 @@ def main():
             "This future allows the temperature to rise a little more that what the Paris Agreement hopes for."
         )
 
-        st.markdown('You can select different emulators based off of <a href="https://ftp.labins.org/dem/fl/" target="_blank">ClimateBench</a> 🌎. hese emulators use your input of cumulative carbon dioxide and the SSP 245\'s values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression.', unsafe_allow_html=True)
+        # st.markdown('You can select different emulators based off of <a href="https://ftp.labins.org/dem/fl/" target="_blank">ClimateBench</a> 🌎. hese emulators use your input of cumulative carbon dioxide and the SSP 245\'s values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression.', unsafe_allow_html=True)
     st.write(
         "You can select different emulators based off of ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression."
     )
