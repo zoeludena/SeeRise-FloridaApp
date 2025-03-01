@@ -164,6 +164,7 @@ def main():
             "This future allows the temperature to rise a little more that what the Paris Agreement hopes for."
         )
 
+        st.markdown('You can select different emulators based off of <a href="https://ftp.labins.org/dem/fl/" target="_blank">ClimateBench</a> 🌎. hese emulators use your input of cumulative carbon dioxide and the SSP 245\'s values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression.', unsafe_allow_html=True)
     st.write(
         "You can select different emulators based off of ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression."
     )
@@ -492,12 +493,15 @@ def main():
             st.markdown("Once you are inside of the open `.dem.sdts` file you will notice a bunch of `.DDF` files. We now need to convert these `.DDF` files unto a DEM file.")
             st.markdown('4. You will need to download `sdts2dem.exe` from <a href="https://www2.cs.arizona.edu/projects/topovista/sdts2dem/" target="_blank">here</a>.', unsafe_allow_html=True)
             st.markdown("5. Move `sdts2dem.exe` to where your `.DDF` files are located.")
-            st.write("6. Open a terminal.")
+            st.write("6. Open a terminal/command prompt.")
             st.markdown("7. Navigate to the directory with your `.DDF` files and `sdts2dem.exe` file.")
+            st.markdown("For example in your terminal write `cd Downloads\\1658320.dem.sdts`. You will need to change `1658320.dem.sdts` with your folder's name.")
             st.markdown("Look at the first four numbers of the `.DDF` files. We will refer to the numbers as `####`.")
             st.markdown("8. Type: `sdts2dem #### location_name`.")
             st.markdown("For example: `sdts2dem 8735 Ozello`.")
             st.markdown("Now you have a DEM file i.e. `Ozello.dem`. You can now upload the file!")
+
+        st.markdown("Here is another <a href='https://gisgeography.com/top-6-free-lidar-data-sources/' target='_blank'>link</a> to GISGeography that provides the \"Top 6 Free LiDAR Data Sources\" to find DEM files.", unsafe_allow_html=True)
 
         file = st.file_uploader("Upload a DEM file (.dem)", type=["dem"])
         if selected_emulator == "Pattern Scaling":
