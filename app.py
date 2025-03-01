@@ -482,9 +482,9 @@ def main():
     if location == "Your Choice":
         st.subheader("Upload a DEM file to see sea level rise in an area of your choice!")
 
-        st.markdown('You can downloaded a DEM file of Florida from <a href="https://ftp.labins.org/dem/fl/" target="_blank">here</a>. If you do this please follow the directions below.', unsafe_allow_html=True)
+        st.markdown('You can create a DEM file of Florida from <a href="https://ftp.labins.org/dem/fl/" target="_blank">here</a>. If you do this please follow the directions below.', unsafe_allow_html=True)
 
-        with st.expander("I clicked the link above:"):
+        with st.expander("Click for Directions:"):
             st.write("You will notice there are many files here. Choose a location that intrigues you. For these directions I will choose Ozello.")
             st.markdown("1. You will want to download the file that ends in `.dem.sdts.tar.gz`.")
             st.write("2. You will then need to unzip the file.")
@@ -494,10 +494,10 @@ def main():
             st.markdown("5. Move `sdts2dem.exe` to where your `.DDF` files are located.")
             st.write("6. Open a terminal.")
             st.markdown("7. Navigate to the directory with your `.DDF` files and `sdts2dem.exe` file.")
-            st.markdown("Look at the first four numbers of the `.DDF` files. We will refer to the numbers as `####`")
-            st.markdown("8. Type: `sdts2dem #### location`")
-            st.markdown("For example: `sdts2dem 8735 Ozello`")
-            st.markdown("Now you have a DEM file! Ex) `Ozello.dem`. You can now upload the file.")
+            st.markdown("Look at the first four numbers of the `.DDF` files. We will refer to the numbers as `####`.")
+            st.markdown("8. Type: `sdts2dem #### location_name`.")
+            st.markdown("For example: `sdts2dem 8735 Ozello`.")
+            st.markdown("Now you have a DEM file i.e. `Ozello.dem`. You can now upload the file!")
 
         file = st.file_uploader("Upload a DEM file (.dem)", type=["dem"])
         if selected_emulator == "Pattern Scaling":
