@@ -172,7 +172,7 @@ def main():
     with st.expander("🤖 Learn about your emulator:"):
         if selected_emulator == "Pattern Scaling":
             st.write(
-                'The pattern scaling model is the simplest emulator at our disposal. The model consists of many linear regression models trained on global mean temperature in different emission scenarios. These models regress desired variables (precipitation, diurnal temperature range, etc.) on global mean temperature which is the "scaling" element of the model. Once trained, the model takes a vector of global mean temperatures from a particular emission scenario, and predicts the desired variables using the inputs. This model is powerful yet simple because it can predict local values of particular variables using only globally averaged inputs.'
+                'The pattern scaling model is the simplest emulator at our disposal. The model consists of many linear regression models trained on global mean temperature in different emission scenarios. These models regress desired variables (precipitation, diurnal temperature range, etc.) on carbon dioxide emissions which is the "scaling" element of the model. Once trained, the model takes a vector of projected carbon dioxide from a particular emission scenario, and predicts the desired variables using the inputs. This model is powerful yet simple because it can predict local values of particular variables using only globally averaged inputs.'
             )
         elif selected_emulator == "Gaussian Process":
             st.write(
