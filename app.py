@@ -116,7 +116,8 @@ def plot_horizontal_boxplot(quartiles, emulator):
 def map_ui():
     st.sidebar.markdown("# Select Location 🗺️")
     locations = ["Sanibel Island", "Miami", "Fort Myers Beach", "Audubon/Merritt Island", "Everglades City", "Your Choice"]
-    selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
+    selected_location = st.sidebar.radio("Choose a location:", locations, index=0)
+
     return selected_location
 
 
