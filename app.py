@@ -115,7 +115,7 @@ def plot_horizontal_boxplot(quartiles, emulator):
 
 def map_ui():
     st.sidebar.markdown("# Select Location 🗺️")
-    locations = ["Sanibel Island", "Miami", "Fort Myers Beach", "Audubon", "Your Choice"]
+    locations = ["Sanibel Island", "Miami", "Fort Myers Beach", "Merritt Island", "Everglades City", "Your Choice"]
     selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
     return selected_location
 
@@ -473,6 +473,37 @@ def main():
             plot_dem(sea_level_rise, "CNN-LTSM", "Merritt Island", (200, 500, 0, 400))
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Merritt Island", (200, 500, 0, 400))
+
+        st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
+
+        st.write(
+            "The Martin Andersen Beachline Expressway crosses through this region, carrying approximately 213 thousand vehicles a day and serving as a crucial connection for residents and visitors traveling from Florida's east coast beaches to Cape Canaveral. It also connects to routes to the John F. Kennedy Space Center."
+        )
+
+        st.write(
+            "We can see that the Savannahs and Diana Shores, both residential areas, are at high risk. Severe flooding is likely following sea level rise, which could displace residents and damage homes."
+        )
+    
+    if location == "Everglades City":
+
+        st.subheader("Everglades City Sea Level Rise")
+
+        directions()
+
+        with st.expander("Click to see a labeled map:"):
+            st.image("assets/google_pics/audubon_google.png")
+            st.write(
+                "This is a screenshot of Google Maps to help you better orient yourself."
+            )
+
+        if selected_emulator == "Pattern Scaling":
+            plot_dem(sea_level_rise, "Pattern Scaling", "Everglades City", (200, 500, 0, 400))
+        if selected_emulator == "Gaussian Process":
+            plot_dem(sea_level_rise, "Gaussian Process", "Everglades City", (200, 500, 0, 400))
+        if "CNN-LTSM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LTSM", "Everglades City", (200, 500, 0, 400))
+        if "Random Forest" == selected_emulator:
+            plot_dem(sea_level_rise, "Random Forest", "Everglades City", (200, 500, 0, 400))
 
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
