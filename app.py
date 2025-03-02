@@ -497,7 +497,7 @@ def main():
             )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise, "Pattern Scaling", "Everglades City")
+            plot_dem(sea_level_rise, "Pattern Scaling", "Everglades City", (0, 1300, 0, 1200))
         if selected_emulator == "Gaussian Process":
             plot_dem(sea_level_rise, "Gaussian Process", "Everglades City")
         if "CNN-LTSM" == selected_emulator:
