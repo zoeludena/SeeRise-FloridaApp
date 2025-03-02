@@ -65,7 +65,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
     norm = mcolors.Normalize(vmin=0, vmax=5)
 
     # Replace NoData values with NaN and correct for rise between 2001 to 2015.
-    slr_correction = 46.37622 # Calculated using historical satellite data.
+    slr_correction = 0.4637622 # Calculated using historical satellite data.
     dem_array = np.where(dem_array == src.nodata, np.nan, dem_array) - slr_correction
     masked_dem = np.where((dem_array >= 0) & (dem_array <= 5), dem_array, np.nan)
 
