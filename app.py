@@ -115,7 +115,7 @@ def plot_horizontal_boxplot(quartiles, emulator):
 
 def map_ui():
     st.sidebar.markdown("# Select Location 🗺️")
-    locations = ["Sanibel Island", "Miami", "Fort Myers Beach", "Merritt Island", "Everglades City", "Your Choice"]
+    locations = ["Sanibel Island", "Miami", "Fort Myers Beach", "Audubon/Merritt Island", "Everglades City", "Your Choice"]
     selected_location = st.sidebar.selectbox("Choose a location:", locations, index=0)
     return selected_location
 
@@ -282,7 +282,7 @@ def main():
         )
 
     st.write(
-        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, Merritt Island, and Everglades City."
+        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, Audubon/Merritt Island, and Everglades City."
     )
     
     st.write(
@@ -457,9 +457,9 @@ def main():
             "Estero Island is a popular tourist destination. You can explore hiking trails, boardwalks, and birdwatching. There are 7 miles of soft, warm, white sand. It is popular for swimming, shelling, jet skiing, and parasailing."
         )
 
-    if location == "Merritt Island":
+    if location == "Audubon/Merritt Island":
 
-        st.subheader("Merritt Island Sea Level Rise")
+        st.subheader("Audubon/Merritt Island Sea Level Rise")
 
         directions()
 
@@ -470,13 +470,13 @@ def main():
             )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise, "Pattern Scaling", "Merritt Island", (200, 500, 0, 400))
+            plot_dem(sea_level_rise, "Pattern Scaling", "Audubon/Merritt Island", (200, 500, 0, 400))
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise, "Gaussian Process", "Merritt Island", (200, 500, 0, 400))
+            plot_dem(sea_level_rise, "Gaussian Process", "Audubon/Merritt Island", (200, 500, 0, 400))
         if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Merritt Island", (200, 500, 0, 400))
+            plot_dem(sea_level_rise, "CNN-LTSM", "Audubon/Merritt Island", (200, 500, 0, 400))
         if "Random Forest" == selected_emulator:
-            plot_dem(sea_level_rise, "Random Forest", "Merritt Island", (200, 500, 0, 400))
+            plot_dem(sea_level_rise, "Random Forest", "Audubon/Merritt Island", (200, 500, 0, 400))
 
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
@@ -495,7 +495,7 @@ def main():
         directions()
 
         with st.expander("Click to see a labeled map:"):
-            st.image("assets/google_pics/audubon_google.png")
+            st.image("assets/google_pics/everglades_city_google.png")
             st.write(
                 "This is a screenshot of Google Maps to help you better orient yourself."
             )
@@ -512,8 +512,10 @@ def main():
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
-            "Everglades City is home to one of many entrances to the famous Everglades National Park. A highly popular tourist destination, the native wildlife population is especially threatened by impending sea level rise due to extremely low elevation. Sea level rise threatens to displace thousands of animals, leaving them with no where else to go."
+            "Everglades City is one of many entrances to the famous Everglades National Park. It is a small community where visitors can get away for a family-friendly Everglades vacation. It is considered an outdoor adventurer's paradise."
         )
+        st.write("Right next to the city is the Ten Thousand Islands National Wildlife Refuge. These are a majority of these small land masses you see being submerged. The refuge is part of the largest expanse of mangrove forest in North America. About two thirds of the refuge is mangrove forest. The northern third is a brackish marsh and interspersed ponds.")
+        st.write("It is part of the US Fish and Wildlife Service lands and waters managed by the Reguse System. They use conservation best practices to help ensure the survival of native wildlife species. The native wildlife population is especially threatened by impending sea level rise, which will displace thousands of animals, leaving them with no where else to go.")
 
     # if selected_emulator == "Pattern Scaling":
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")

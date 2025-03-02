@@ -40,7 +40,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
             DEM_PATH = os.path.join(BASE_DIR, "Titusville", "Titusville.dem")
         elif dem == "Cape Canaveral":
             DEM_PATH = os.path.join(BASE_DIR, "Cape_Canaveral", "Cape_Canaveral.dem")
-        elif dem == "Merritt Island":
+        elif dem == "Audubon/Merritt Island":
             DEM_PATH = os.path.join(BASE_DIR, "Courtenay", "Courtenay.dem")
         elif dem == "Cedar Key":
             DEM_PATH = os.path.join(BASE_DIR, "Cedar_Key", "Cedar_Key.dem")
@@ -91,7 +91,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
     ax.set_ylabel("Y")
 
     if dem not in ["Sanibel Island", "Fort Myers Beach", "Everglades City"]:
-        if dem == "Merritt Island":
+        if dem == "Audubon/Merritt Island":
             ax.text(
                 0.5, -0.20, "*Note: Areas above 5m are also white.",
                 fontsize=10, ha="right", transform=ax.transAxes, color="black"
