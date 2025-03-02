@@ -64,9 +64,8 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
 
     norm = mcolors.Normalize(vmin=0, vmax=5)
 
-    # Replace NoData values with NaN and correct for rise between 2001 to 2015.
-    slr_correction = 0.4637622 # Calculated using historical satellite data.
-    dem_array = np.where(dem_array == src.nodata, np.nan, dem_array) - slr_correction
+    # Replace NoData values with NaN.
+    dem_array = np.where(dem_array == src.nodata, np.nan, dem_array)
     masked_dem = np.where((dem_array >= 0) & (dem_array <= 5), dem_array, np.nan)
 
     if sea_level > np.nanmax(dem_array):
@@ -74,8 +73,9 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
     elif sea_level < np.nanmin(dem_array):
         st.warning("Sea level is below the lowest elevation in the DEM. No flooding expected.")
 
-    # Create a mask for flooded areas
-    flooded_mask = dem_array <= sea_level
+    # Create a mask for flooded areas and correct for historical sea level rise.
+    slr_correction = 0.4637622 # Calculated using historical satellite data.
+    flooded_mask = dem_array <= sea_level + slr_correction
 
     # Plot DEM using the terrain colormap
     fig, ax = plt.subplots(figsize=(8, 6))
