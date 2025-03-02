@@ -133,6 +133,8 @@ def directions():
 def main():
     st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
 
+    st.markdown("Made by <a href='https://zoeludena.github.io/' target='_blank'>Zoe Ludena</a>, <a href='https://www.linkedin.com/in/ericmpham/' target='_blank'>Eric Pham</a>, and <a href='https://github.com/ylesia-wu' target='_blank'>Ylesia Wu</a>.", unsafe_allow_html=True)
+
     co2 = emissions_ui()
 
     selected_emulator, emulator_colors = emulator_ui()
