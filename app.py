@@ -16,7 +16,7 @@ def emissions_ui():
     st.sidebar.markdown("# Emissions 🌫️")
     # Change this to start at 0 and end at 9500
     co2 = st.sidebar.slider(
-        "Cumulative CO2 Amount (GtCO2) in 2100", 0, max_co2, 4520, 10
+        "Additional Cumulative CO2 Emitted (GtCO2) by 2100", 0, max_co2, 4520, 10
     )
     return co2
 
