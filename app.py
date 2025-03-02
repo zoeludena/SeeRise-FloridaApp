@@ -508,11 +508,7 @@ def main():
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
         st.write(
-            "The Martin Andersen Beachline Expressway crosses through this region, carrying approximately 213 thousand vehicles a day and serving as a crucial connection for residents and visitors traveling from Florida's east coast beaches to Cape Canaveral. It also connects to routes to the John F. Kennedy Space Center."
-        )
-
-        st.write(
-            "We can see that the Savannahs and Diana Shores, both residential areas, are at high risk. Severe flooding is likely following sea level rise, which could displace residents and damage homes."
+            "Everglades City is home to one of many entrances to the famous Everglades National Park. A highly popular tourist destination, the native wildlife population is especially threatened by impending sea level rise due to extremely low elevation. Sea level rise threatens to displace thousands of animals, leaving them with no where else to go."
         )
 
     # if selected_emulator == "Pattern Scaling":
