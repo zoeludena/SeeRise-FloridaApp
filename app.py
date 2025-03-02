@@ -143,7 +143,7 @@ def main():
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
     st.write(
-        "This application predicts the sea level rise under the assumption of SSP 245's values in 2100. The only variable you are controlling is cumulative carbon dioxide. Your starting point is the amount of carbon dioxide (in gigatons) predicted for 2100 by SSP 245 (4520 gigatons). There is 3340 gigatons of carbon dioxide in 2025."
+        "This application predicts the sea level rise in 2100 under the assumption of projected greenhouse gas emission in SSP 245 (with the exception of CO2). The only variable you are controlling is cumulative carbon dioxide. Your starting point is the amount of carbon dioxide (in gigatons) predicted for 2100 by SSP 245 (4520 gigatons). There is 3340 gigatons of carbon dioxide in 2025."
     )
 
     with st.expander("📣 Click to learn about SSP 245"):
