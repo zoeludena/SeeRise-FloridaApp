@@ -75,7 +75,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
 
     # Create a mask for flooded areas and correct for historical sea level rise.
     slr_correction = 0.4637622 # Calculated using historical satellite data.
-    flooded_mask = dem_array <= sea_level + slr_correction
+    flooded_mask = dem_array <= (sea_level + slr_correction)
 
     # Plot DEM using the terrain colormap
     fig, ax = plt.subplots(figsize=(8, 6))
