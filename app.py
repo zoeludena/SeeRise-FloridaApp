@@ -325,6 +325,10 @@ def main():
         # st.write("This vacation spot could possibly be submerged! 🤿")
 
         st.write(
+            "Sanibel Island is a barrier island located off the coast of Fort Myers, Florida and is most famous for its shell-covered beaches. Its unique geography allows beautiful seashells from the Gulf of Mexico to accumulate on its shores, particularly after hurricanse pass through. It draws thousands of tourists every year."
+        )
+
+        st.write(
             "We can see that Sanibel Island is almost halfway submerged when there is 4520 Gigatons of cumulative carbon dioxide in 2100. The part that is submerged happens to be J.N. Ding Darling National Wildlife Refuge and the Dunes."
         )
 
