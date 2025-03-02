@@ -40,7 +40,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
             DEM_PATH = os.path.join(BASE_DIR, "Titusville", "Titusville.dem")
         elif dem == "Cape Canaveral":
             DEM_PATH = os.path.join(BASE_DIR, "Cape_Canaveral", "Cape_Canaveral.dem")
-        elif dem == "Merrit Island":
+        elif dem == "Merritt Island":
             DEM_PATH = os.path.join(BASE_DIR, "Courtenay", "Courtenay.dem")
         elif dem == "Cedar Key":
             DEM_PATH = os.path.join(BASE_DIR, "Cedar_Key", "Cedar_Key.dem")
