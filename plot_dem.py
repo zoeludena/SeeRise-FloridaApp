@@ -78,12 +78,12 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
 
     # Plot DEM using the terrain colormap
     fig, ax = plt.subplots(figsize=(8, 6))
-    cax = ax.imshow(masked_dem, cmap="grey", origin="upper")
+    cax = ax.imshow(masked_dem, cmap="YlGn", origin="upper") #grey
     plt.colorbar(cax, label="Elevation (m)")
 
     # Overlay the flooded areas in dark blue using a contour plot
-    if np.any(flooded_mask):  # Ensure we have flooded areas before plotting
-        ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["cornflowerblue"], alpha=0.6)
+    if np.any(flooded_mask):  # Ensure we have flooded areas before plotting #CornflowerBlue
+        ax.contourf(dem_array, levels=[np.nanmin(dem_array), sea_level], colors=["paleturquoise"], alpha=0.6)
 
     ax.set_title(f"{emulator} DEM with {sea_level:.2f}m Sea Level Rise")
     ax.set_xlabel("X")
