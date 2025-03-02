@@ -503,11 +503,11 @@ def main():
         if selected_emulator == "Pattern Scaling":
             plot_dem(sea_level_rise, "Pattern Scaling", "Everglades City", (0, 1200, 0, 1300))
         if selected_emulator == "Gaussian Process":
-            plot_dem(sea_level_rise, "Gaussian Process", "Everglades City")
+            plot_dem(sea_level_rise, "Gaussian Process", "Everglades City", (0, 1200, 0, 1300))
         if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Everglades City")
+            plot_dem(sea_level_rise, "CNN-LTSM", "Everglades City", (0, 1200, 0, 1300))
         if "Random Forest" == selected_emulator:
-            plot_dem(sea_level_rise, "Random Forest", "Everglades City")
+            plot_dem(sea_level_rise, "Random Forest", "Everglades City", (0, 1200, 0, 1300))
 
         st.write(f"As a reminder, you are using the {selected_emulator} emulator.")
 
