@@ -282,7 +282,7 @@ def main():
         )
 
     st.write(
-        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, and Audubon."
+        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, Merritt Island, and Everglades City."
     )
     
     st.write(
