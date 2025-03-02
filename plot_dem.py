@@ -89,7 +89,7 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
 
-    if dem not in ["Sanibel Island", "Fort Myers Beach"]:
+    if dem not in ["Sanibel Island", "Fort Myers Beach", "Everglades City"]:
         if dem == "Merritt Island":
             ax.text(
                 0.5, -0.20, "*Note: Areas above 5m are also white.",
