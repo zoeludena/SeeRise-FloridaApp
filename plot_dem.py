@@ -27,27 +27,27 @@ def plot_dem(sea_level, emulator, dem, crop_window=None, uploaded_file = None):
                 bounds = src.bounds
     else:
         if dem == "Sanibel Island":
-            DEM_PATH = os.path.join(BASE_DIR, "Sanibel", "Sanibel.dem")
+            DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Sanibel.dem")
         elif dem == "Miami":
-            DEM_PATH = os.path.join(BASE_DIR, "Miami", "Miami.dem")
-        elif dem == "Tampa":
-            DEM_PATH = os.path.join(BASE_DIR, "Tampa", "Tampa.dem")
-        elif dem == "Hobe Sound":
-            DEM_PATH = os.path.join(BASE_DIR, "Hobe_Sound", "Hobe.dem")
+            DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Miami.dem")
+        # elif dem == "Tampa":
+        #     DEM_PATH = os.path.join(BASE_DIR, "Tampa", "Tampa.dem")
+        # elif dem == "Hobe Sound":
+        #     DEM_PATH = os.path.join(BASE_DIR, "Hobe_Sound", "Hobe.dem")
         elif dem == "Fort Myers Beach":
-            DEM_PATH = os.path.join(BASE_DIR, "Fort_Myers", "Fort_Myers.dem")
-        elif dem == "Titusville":
-            DEM_PATH = os.path.join(BASE_DIR, "Titusville", "Titusville.dem")
-        elif dem == "Cape Canaveral":
-            DEM_PATH = os.path.join(BASE_DIR, "Cape_Canaveral", "Cape_Canaveral.dem")
+            DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Fort_Myers.dem")
+        # elif dem == "Titusville":
+        #     DEM_PATH = os.path.join(BASE_DIR, "Titusville", "Titusville.dem")
+        # elif dem == "Cape Canaveral":
+        #     DEM_PATH = os.path.join(BASE_DIR, "Cape_Canaveral", "Cape_Canaveral.dem")
         elif dem == "Audubon/Merritt Island":
-            DEM_PATH = os.path.join(BASE_DIR, "Courtenay", "Courtenay.dem")
-        elif dem == "Cedar Key":
-            DEM_PATH = os.path.join(BASE_DIR, "Cedar_Key", "Cedar_Key.dem")
+            DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Courtenay.dem")
+        # elif dem == "Cedar Key":
+        #     DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Cedar_Key.dem")
         elif dem == "Everglades City":
-            DEM_PATH = os.path.join(BASE_DIR, "Everglades_City", "Everglades_City.dem")
-        elif dem == "Naples":
-            DEM_PATH = os.path.join(BASE_DIR, "Napels_North", "Napels_North.dem")
+            DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Everglades_City.dem")
+        # elif dem == "Naples":
+        #     DEM_PATH = os.path.join(BASE_DIR, "DEM_files", "Napels_North.dem")
         
         with rasterio.open(DEM_PATH) as src:
             dem_array = src.read(1)
