@@ -12,7 +12,6 @@ import streamlit.components.v1 as components
 
 max_co2 = 9500
 
-
 def emissions_ui():
     st.sidebar.markdown("# Emissions 🌫️")
     # Change this to start at 0 and end at 9500
@@ -132,7 +131,7 @@ def directions():
 
 
 def main():
-    st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida")
+    st.title("🌊 SeeRise: Visualizing Emulated Sea Level Rise on Florida", anchor="top")
 
     st.markdown("Made by <a href='https://zoeludena.github.io/' target='_blank'>Zoe Ludena</a>, <a href='https://www.linkedin.com/in/ericmpham/' target='_blank'>Eric Pham</a>, and <a href='https://github.com/ylesia-wu' target='_blank'>Ylesia Wu</a>.", unsafe_allow_html=True)
 
@@ -145,6 +144,9 @@ def main():
     st.subheader(f"Selected emulator: {selected_emulator}")
 
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
+
+    st.markdown("*We have three sections of the app. The first two are educational. They aim to help you understand our methods and help you visualize sea level rise in isolation. The boxplot and the map at the bottom of the page react with the cumulative carbon dioxide and emulator selection. To skip the first to sections to visualize Florida please click the words below:*")
+    st.markdown("⏭️[Go to Interactive Florida Map Directions](#map)")
 
     st.write(
         "This application predicts the sea level rise in 2100 under the assumption of projected greenhouse gas emission in SSP 245 (with the exception of CO2). The only variable you are controlling is cumulative carbon dioxide. Your starting point is the amount of carbon dioxide (in gigatons) predicted for 2100 by SSP 245 (4520 gigatons). There is 3340 gigatons of carbon dioxide in 2025."
@@ -168,7 +170,6 @@ def main():
             "This future allows the temperature to rise a little more that what the Paris Agreement hopes for."
         )
 
-        # st.markdown('You can select different emulators based off of <a href="https://ftp.labins.org/dem/fl/" target="_blank">ClimateBench</a> 🌎. hese emulators use your input of cumulative carbon dioxide and the SSP 245\'s values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression.', unsafe_allow_html=True)
     st.write(
         "You can select different emulators based off of ClimateBench 🌎. These emulators use your input of cumulative carbon dioxide and the SSP 245's values for other greenhouse gases in 2025 to predict the temperature 🌡️. From there, we will predict the sea level rise using linear regression."
     )
@@ -268,7 +269,9 @@ def main():
         "😱 \"Wow, that's scary!\" However, what's even more concerning might be the following observation: land slopes. This means the sea level rise will cause ocean water to flow inland, shrinking our coastlines."
     )
 
-    st.subheader("Visualizing Sea Level Rise on Florida's Coast in 2100")
+    st.subheader("Visualizing Sea Level Rise on Florida's Coast in 2100", anchor="map")
+
+    st.markdown("⏭️[Go to Top of the Page](#top)")
 
     st.write(
         "Below, you will see our visualizations for select locations on Florida's coastline. We used a DEM file to provide us with the elevation data of these locations."
