@@ -145,7 +145,7 @@ def main():
 
     st.write("👋 Hello there! Welcome to our application that predicts sea level rise!")
 
-    st.markdown("*We have three sections of the app. The first two are educational. They aim to help you understand our methods and help you visualize sea level rise in isolation. The boxplot and the map at the bottom of the page react with the cumulative carbon dioxide and emulator selection. To skip the first to sections to visualize Florida please click the words below:*")
+    st.markdown("*We have three sections of the app. The first two are educational. They aim to help you understand our methods and help you visualize sea level rise in isolation. The boxplot and the map at the bottom of the page react with the cumulative carbon dioxide and emulator selection. To skip the first two sections to visualize Florida please click the words below:*")
     st.markdown("⏭️[Go to Interactive Florida Map Directions](#map)")
 
     st.write(
