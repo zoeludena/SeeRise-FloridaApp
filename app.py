@@ -289,14 +289,14 @@ def main():
         )
 
     st.write(
-        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, Audubon/Merritt Island, and Everglades City."
+        "Your options for pre-set locations are: Sanibel Island, Miami, Fort Myers Beach, Audubon/Merritt Island, and Everglades City. You can upload your own DEM file to visualize other areas!"
     )
     
     st.write(
         "Some of these locations have greater elevations than 5 meters. However, to highlight the impact, we only color the 0 to 5 meter range. Anything above or below that range is going to appear white in the visualization."
     )
 
-    st.write("You can upload your own DEM file to visualize other areas!")
+    st.markdown("👈 Look to the left at \"**Select Location** 🗺️\" to choose your location!")
 
     if location == "Sanibel Island":
 
