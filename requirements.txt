@@ -17,3 +17,4 @@ gpflow
 geopandas
 dask
 rasterio
+streamlit-user-agent

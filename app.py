@@ -8,6 +8,7 @@ import geopandas as gpd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 from plot_dem import plot_dem
+import streamlit.components.v1 as components
 
 max_co2 = 9500
 
@@ -201,13 +202,13 @@ def main():
 
     st.subheader(f"{selected_emulator} compared to NASA's Median Prediction")
     if selected_emulator == "Pattern Scaling":
-        st.image("assets/2025_fixed_ps_preds.png")
+        components.iframe("https://zoeludena.github.io/SeeRiseWebsite/assets/figures/2025_fixed_ps_preds.html", height=500)
     elif selected_emulator == "Gaussian Process":
-        st.image("assets/2025_fixed_gp_preds.png")
+        components.iframe("https://zoeludena.github.io/SeeRiseWebsite/assets/figures/2025_fixed_gp_preds.html", height=500)
     elif selected_emulator == 'Random Forest':
-        st.image("assets/2025_fixed_rf_preds.png")
+        components.iframe("https://zoeludena.github.io/SeeRiseWebsite/assets/figures/2025_fixed_rf_preds.html", height=500)
     else:
-        st.image("assets/2025_fixed_cnn_preds.png")
+        components.iframe("https://zoeludena.github.io/SeeRiseWebsite/assets/figures/2025_fixed_cnn_preds.html", height=500)
 
     st.markdown("The visualization above shows you our emulator's uncertainty compared to NASA's median projection. This projection was collected from NASA's <a href='https://sealevel.nasa.gov/ipcc-ar6-sea-level-projection-tool/?type=global' target='_blank'>Sea Level Projection Tool</a>.", unsafe_allow_html=True)
     st.write("Our emulators were calculated while keeping the other greenhouse gases fixed to their SSP 245 year 2025 equivalents. For this reason you will see they all underpredict, but NASA's projection is within the uncertainty interval.")
@@ -391,7 +392,7 @@ def main():
             )
 
         if selected_emulator == "Pattern Scaling":
-            plot_dem(sea_level_rise, "Pattern Scaling", "Miami", (0, 1300, 400, 1300))
+            plot_dem(sea_level_rise, "Pattern Scaling", "Miami", (400, 1300, 400, 1300))
         if selected_emulator == "Gaussian Process":
             plot_dem(
                 sea_level_rise, "Gaussian Process", "Miami", (400, 1300, 400, 1300)
