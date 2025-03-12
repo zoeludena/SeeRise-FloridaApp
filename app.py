@@ -23,7 +23,7 @@ def emissions_ui():
 
 emulator_colors = {
     "Pattern Scaling": "#d55e00",
-    "CNN-LTSM": "#cc79a7",
+    "CNN-LSTM": "#cc79a7",
     "Random Forest": "#009e73",
     "Gaussian Process": "#0072b2",
 }
@@ -247,12 +247,12 @@ def main():
 
         sea_level_rise = rf_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
 
-    if "CNN-LTSM" == selected_emulator:
+    if "CNN-LSTM" == selected_emulator:
         path = f"data/CNN_245_Linear/CNN_Carbon_{co2}_Preds.csv"
         cnn_df = pd.read_csv(path)
         cnn_quartiles = cnn_df[cnn_df["year"] == year].iloc[0, 1:]
         st.subheader(f"CNN Projected Sea Level Rise")
-        box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LTSM")
+        box = plot_horizontal_boxplot(cnn_quartiles, "CNN-LSTM")
         st.pyplot(box)
 
         sea_level_rise = cnn_quartiles["50q_dH_dT"] / 1000  # Convert mm to meters
@@ -318,8 +318,8 @@ def main():
             plot_dem(
                 sea_level_rise, "Gaussian Process", "Sanibel Island", (0, 950, 0, 1300)
             )
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Sanibel Island", (0, 950, 0, 1300))
+        if "CNN-LSTM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LSTM", "Sanibel Island", (0, 950, 0, 1300))
         if "Random Forest" == selected_emulator:
             plot_dem(
                 sea_level_rise, "Random Forest", "Sanibel Island", (0, 950, 0, 1300)
@@ -367,8 +367,8 @@ def main():
     #         plot_dem(sea_level_rise, "Pattern Scaling", "Tampa", (150, 500, 100, 350))
     #     if selected_emulator == "Gaussian Process":
     #         plot_dem(sea_level_rise, "Gaussian Process", "Tampa", (150, 500, 100, 350))
-    #     if "CNN-LTSM" == selected_emulator:
-    #         plot_dem(sea_level_rise, "CNN-LTSM", "Tampa", (150, 500, 100, 350))
+    #     if "CNN-LSTM" == selected_emulator:
+    #         plot_dem(sea_level_rise, "CNN-LSTM", "Tampa", (150, 500, 100, 350))
     #     if "Random Forest" == selected_emulator:
     #         plot_dem(sea_level_rise, "Random Forest", "Tampa", (150, 500, 100, 350))
 
@@ -400,8 +400,8 @@ def main():
             plot_dem(
                 sea_level_rise, "Gaussian Process", "Miami", (400, 1300, 400, 1300)
             )
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Miami", (400, 1300, 400, 1300))
+        if "CNN-LSTM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LSTM", "Miami", (400, 1300, 400, 1300))
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Miami", (400, 1300, 400, 1300))
 
@@ -441,8 +441,8 @@ def main():
             plot_dem(sea_level_rise, "Pattern Scaling", "Fort Myers Beach")
         if selected_emulator == "Gaussian Process":
             plot_dem(sea_level_rise, "Gaussian Process", "Fort Myers Beach")
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Fort Myers Beach")
+        if "CNN-LSTM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LSTM", "Fort Myers Beach")
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Fort Myers Beach")
 
@@ -480,8 +480,8 @@ def main():
             plot_dem(sea_level_rise, "Pattern Scaling", "Audubon/Merritt Island", (200, 500, 0, 400))
         if selected_emulator == "Gaussian Process":
             plot_dem(sea_level_rise, "Gaussian Process", "Audubon/Merritt Island", (200, 500, 0, 400))
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Audubon/Merritt Island", (200, 500, 0, 400))
+        if "CNN-LSTM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LSTM", "Audubon/Merritt Island", (200, 500, 0, 400))
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Audubon/Merritt Island", (200, 500, 0, 400))
 
@@ -511,8 +511,8 @@ def main():
             plot_dem(sea_level_rise, "Pattern Scaling", "Everglades City", (0, 1200, 0, 1300))
         if selected_emulator == "Gaussian Process":
             plot_dem(sea_level_rise, "Gaussian Process", "Everglades City", (0, 1200, 0, 1300))
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Everglades City", (0, 1200, 0, 1300))
+        if "CNN-LSTM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LSTM", "Everglades City", (0, 1200, 0, 1300))
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Everglades City", (0, 1200, 0, 1300))
 
@@ -528,8 +528,8 @@ def main():
     #     plot_dem(sea_level_rise,"Pattern Scaling", "Cedar Key")
     # if selected_emulator == "Gaussian Process":
     #     plot_dem(sea_level_rise,"Gaussian Process", "Cedar Key")
-    # if "CNN-LTSM" == selected_emulator:
-    #     plot_dem(sea_level_rise, "CNN-LTSM", "Cedar Key")
+    # if "CNN-LSTM" == selected_emulator:
+    #     plot_dem(sea_level_rise, "CNN-LSTM", "Cedar Key")
     # if "Random Forest" == selected_emulator:
     #     plot_dem(sea_level_rise, "Random Forest", "Cedar Key")
 
@@ -561,8 +561,8 @@ def main():
             plot_dem(sea_level_rise,"Pattern Scaling", "Your Choice", uploaded_file=file)
         if selected_emulator == "Gaussian Process":
             plot_dem(sea_level_rise,"Gaussian Process", "Your Choice", uploaded_file=file)
-        if "CNN-LTSM" == selected_emulator:
-            plot_dem(sea_level_rise, "CNN-LTSM", "Your Choice", uploaded_file=file)
+        if "CNN-LSTM" == selected_emulator:
+            plot_dem(sea_level_rise, "CNN-LSTM", "Your Choice", uploaded_file=file)
         if "Random Forest" == selected_emulator:
             plot_dem(sea_level_rise, "Random Forest", "Your Choice", uploaded_file=file)
 
